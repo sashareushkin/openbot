@@ -14,7 +14,7 @@ if [[ "$latest" == "$current" ]]; then
 fi
 branch="sync/upstream-$latest"
 if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
-  if gh pr list --base "$GITHUB_REF_NAME" --head "$branch" --state open --json number --jq 'length' | grep -qx 1; then
+  if gh pr list --repo "$GITHUB_REPOSITORY" --base "$GITHUB_REF_NAME" --head "$branch" --state open --json number --jq 'length' | grep -qx 1; then
     echo "An open pull request already exists for $latest; leaving it unchanged."
     exit 0
   fi
@@ -39,7 +39,7 @@ printf '%s\n' "$latest" > .github/upstream-release.txt
 git add .github/upstream-release.txt
 git commit -m "Merge upstream OpenBot $latest"
 git push origin "HEAD:refs/heads/$branch"
-gh pr create --base "$GITHUB_REF_NAME" --head "$branch" \
+gh pr create --repo "$GITHUB_REPOSITORY" --base "$GITHUB_REF_NAME" --head "$branch" \
   --title "Update OpenBot to $latest" \
   --body "## Linked issue
 
