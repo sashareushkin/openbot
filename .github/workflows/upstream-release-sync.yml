@@ -1,0 +1,23 @@
+name: Check upstream releases
+on:
+  schedule:
+    - cron: '37 5 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: upstream-release-sync
+  cancel-in-progress: false
+jobs:
+  propose-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the custom branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - name: Propose the latest upstream release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/propose-upstream-release.sh
