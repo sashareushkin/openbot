@@ -2,10 +2,16 @@ import { TRANSLATED_LOCALES, type TranslatedLocale } from "@openbot/i18n";
 import { installPointerFocusGuard } from "@openbot/ui/pointer-focus";
 import type { Preview } from "storybook-solidjs-vite";
 import { StaticI18nProvider } from "../src/renderer/src/i18n-context";
+import { createMockOpenBot } from "../src/renderer/src/preview/mock-openbot";
 import "../src/renderer/src/styles.css";
 import "./preview.css";
 
 installPointerFocusGuard();
+
+// The catalog uses a fixture bridge when a story remounts its own mock.
+if (new URLSearchParams(window.location.search).has("catalog")) {
+  window.openbot = createMockOpenBot().api;
+}
 
 function isTranslatedLocale(value: unknown): value is TranslatedLocale {
   return TRANSLATED_LOCALES.some((locale) => locale === value);
@@ -27,10 +33,12 @@ const preview: Preview = {
   initialGlobals: { locale: "en", colorScheme: "dark" },
   decorators: [
     (Story, context) => {
+      // Solid 2 can expose an empty reactive args store on the first render.
+      if (Object.keys(context.args).length === 0) context.args = context.unmappedArgs;
       document.documentElement.dataset.openbotColorScheme = context.globals.colorScheme === "light" ? "light" : "dark";
       return (
         <StaticI18nProvider locale={isTranslatedLocale(context.globals.locale) ? context.globals.locale : "en"}>
-          <Story />
+          {Story()}
         </StaticI18nProvider>
       );
     },

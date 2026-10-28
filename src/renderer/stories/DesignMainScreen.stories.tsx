@@ -18,6 +18,7 @@ const fallback = createMockOpenBot(MAIN_SCREEN_OPTIONS);
 
 export const Main: Story = {
   render: () => {
+    document.documentElement.dataset.visualVariant = "white";
     window.openbot = fallback.api;
     return <OpenBotPlayground options={MAIN_SCREEN_OPTIONS} />;
   },

@@ -1,3 +1,5 @@
+import { disposeMessageCatalog, renderMessageCatalog } from "./message-catalog.js";
+
 const screens = [
   {
     id: "design-main-screen--main",
@@ -20,16 +22,9 @@ const screens = [
 ];
 const content = document.querySelector("#content");
 let currentScreen;
-const visualVariants = [
-  { id: "white", name: "Чистый", description: "Почти белый фон и мягкие поверхности" },
-  { id: "soft", name: "Мягкий", description: "Нейтральный серый и белые сообщения" },
-  { id: "outline", name: "Свободный", description: "Белый фон и открытые ответы" },
-  { id: "current", name: "Текущий", description: "Тёплый вариант с более заметным выбором" },
-];
-let activeVariant = "white";
 function applyVariant(frame) {
-  if (frame.dataset.screen === "design-main-screen--main" && frame.contentDocument?.documentElement) {
-    frame.contentDocument.documentElement.dataset.visualVariant = activeVariant;
+  if (frame.contentDocument?.documentElement) {
+    frame.contentDocument.documentElement.dataset.visualVariant = "white";
   }
 }
 
@@ -122,24 +117,8 @@ function renderMap() {
   wireFrames();
 }
 function renderScreen() {
-  const choices =
-    currentScreen.id === "design-main-screen--main"
-      ? `<div class="variant-picker" role="group" aria-label="Вариант оформления"><span class="variant-label">Оформление</span>${visualVariants.map((variant) => `<button type="button" class="variant-option" data-variant="${variant.id}" aria-pressed="${variant.id === activeVariant}" title="${variant.description}">${variant.name}</button>`).join("")}</div>`
-      : "";
-  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div>${choices}</div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
+  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div></div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
   content.querySelector("#back").onclick = () => navigate("map");
-  content.querySelectorAll("[data-variant]").forEach(
-    (button) =>
-      void button.addEventListener("click", () => {
-        activeVariant = button.dataset.variant;
-        content
-          .querySelectorAll("[data-variant]")
-          .forEach(
-            (option) => void option.setAttribute("aria-pressed", String(option.dataset.variant === activeVariant)),
-          );
-        content.querySelectorAll("iframe[data-screen]").forEach(applyVariant);
-      }),
-  );
   wireFrames();
 }
 async function renderPrinciples() {
@@ -154,16 +133,20 @@ async function renderPrinciples() {
   }
 }
 function navigate(page) {
+  disposeMessageCatalog();
   document
     .querySelectorAll(".nav")
     .forEach((nav) => void nav.classList.toggle("active", nav.dataset.page === (page === "screen" ? "map" : page)));
   document.querySelector("#breadcrumbs").textContent =
     page === "map"
       ? "Студия / Карта экранов"
-      : page === "principles"
-        ? "Студия / Принципы интерфейса"
-        : `Студия / ${currentScreen.group} / ${currentScreen.name}`;
+      : page === "messages"
+        ? "Студия / Элементы переписки"
+        : page === "principles"
+          ? "Студия / Принципы интерфейса"
+          : `Студия / ${currentScreen.group} / ${currentScreen.name}`;
   if (page === "map") renderMap();
+  else if (page === "messages") void renderMessageCatalog(content);
   else if (page === "principles") void renderPrinciples();
   else renderScreen();
 }

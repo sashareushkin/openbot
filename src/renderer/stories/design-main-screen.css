@@ -240,7 +240,7 @@ a[href]::after {
   margin-left: auto;
 }
 
-/* Design variations are preview-only and keep the same interaction structure. */
+/* Approved clean appearance for the prototype. */
 :root[data-openbot-color-scheme="light"][data-visual-variant="white"] {
   --openbot-bg-canvas: #fafafa;
   --openbot-bg-frame: #f1f2f3;
@@ -276,83 +276,7 @@ a[href]::after {
   border-color: #ebedef;
 }
 
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] {
-  --openbot-bg-canvas: #f5f5f6;
-  --openbot-bg-frame: #e9e9eb;
-  --openbot-bg-sidebar: #eeeeef;
-  --openbot-bg-native-sidebar: #eeeeef;
-  --openbot-bg-control: #e5e6e8;
-  --openbot-bg-control-hover: #dedfe1;
-  --openbot-text-primary: #26272b;
-  --openbot-text-secondary: #505157;
-  --openbot-text-muted: #707177;
-  --openbot-text-placeholder: #707177;
-  --openbot-border: rgba(38, 39, 43, 0.1);
-  --openbot-border-strong: rgba(38, 39, 43, 0.18);
-}
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-search-trigger {
-  background: #e5e6e8;
-}
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-agent-item .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-agent-item .agent-row-active:hover,
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="soft"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active:hover {
-  background: #ffffff;
-}
-
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] {
-  --openbot-bg-canvas: #ffffff;
-  --openbot-bg-frame: #f7f7f7;
-  --openbot-bg-sidebar: #ffffff;
-  --openbot-bg-native-sidebar: #ffffff;
-  --openbot-bg-control: #f6f6f6;
-  --openbot-bg-control-hover: #ededed;
-  --openbot-text-primary: #242424;
-  --openbot-text-secondary: #4d4d4d;
-  --openbot-text-muted: #727272;
-  --openbot-text-placeholder: #727272;
-  --openbot-border: rgba(30, 30, 30, 0.1);
-  --openbot-border-strong: rgba(30, 30, 30, 0.17);
-}
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-search-trigger {
-  background: #f7f7f7;
-}
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-agent-item .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-agent-item .agent-row-active:hover,
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active:hover {
-  background: #f1f1f1;
-}
-:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
-  .message-entry-agent
-  .ui-bubble-variant-muted
-  > .ui-bubble-content {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-
-:root[data-openbot-color-scheme="light"][data-visual-variant]:not([data-visual-variant="current"]) .composer-button,
-:root[data-openbot-color-scheme="light"][data-visual-variant]:not([data-visual-variant="current"]) .dictation-button {
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] .composer-button,
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] .dictation-button {
   background: var(--openbot-bg-control);
-}
-
-/* A slightly stronger selected row in the warm reference variant. */
-:root[data-openbot-color-scheme="light"][data-visual-variant="current"] .sidebar-agent-item .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="current"] .sidebar-agent-item .agent-row-active:hover,
-:root[data-openbot-color-scheme="light"][data-visual-variant="current"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active,
-:root[data-openbot-color-scheme="light"][data-visual-variant="current"]
-  .sidebar-pinned-item[data-pinned-key^="agent:"]
-  .agent-row-active:hover {
-  background: #e6e4e1;
 }
