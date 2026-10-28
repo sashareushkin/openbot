@@ -31,6 +31,7 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
   let observed: Element | null = null;
   let observedToolbar: Element | null = null;
   let observedLayer: Element | null = null;
+  let observedServerMenu: Element | null = null;
   let selectionRange: Range | null = null;
   // Reuse the original triggers, so their menus and keyboard behavior remain available in the preview.
   const moved = new Map<Element, { parent: Node; next: Node | null }>();
@@ -44,6 +45,7 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
   let frame = 0;
   const resize = new ResizeObserver(schedule);
   const toolbarResize = new ResizeObserver(schedule);
+  const serverMenuResize = new ResizeObserver(schedule);
   const layerObserver = new MutationObserver(schedule);
   function schedule() {
     cancelAnimationFrame(frame);
@@ -51,7 +53,26 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
   }
   function sync() {
     moveTrigger(".sidebar-server-name", document.querySelector(".window-rail-group"));
-    moveTrigger(".sidebar-new-button", document.querySelector(".sidebar-search-wrap"));
+    const serverTrigger = document.querySelector<HTMLElement>(".window-rail-group > .sidebar-server-name");
+    const serverMenu = document.querySelector<HTMLElement>("[data-popper-positioner]:has(> .server-menu)");
+    if (observedServerMenu !== serverMenu) {
+      serverMenuResize.disconnect();
+      observedServerMenu = serverMenu;
+      if (serverMenu) serverMenuResize.observe(serverMenu);
+    }
+    if (serverTrigger && serverMenu) {
+      const anchor = serverTrigger.getBoundingClientRect();
+      const width = serverMenu.offsetWidth;
+      const height = serverMenu.offsetHeight;
+      const x = Math.max(8, Math.min(anchor.right + 6, window.innerWidth - width - 8));
+      const y = Math.max(8, Math.min(anchor.top, window.innerHeight - height - 8));
+      const left = `${x}px`;
+      const top = `${y}px`;
+      if (serverMenu.style.getPropertyValue("--design-server-x") !== left)
+        serverMenu.style.setProperty("--design-server-x", left);
+      if (serverMenu.style.getPropertyValue("--design-server-y") !== top)
+        serverMenu.style.setProperty("--design-server-y", top);
+    }
     const layer = document.querySelector<HTMLElement>(".selection-actions-layer");
     if (observedLayer !== layer) {
       layerObserver.disconnect();
@@ -144,6 +165,7 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
     observer.disconnect();
     resize.disconnect();
     toolbarResize.disconnect();
+    serverMenuResize.disconnect();
     layerObserver.disconnect();
     cancelAnimationFrame(frame);
     document.removeEventListener("input", schedule);

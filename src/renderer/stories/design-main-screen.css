@@ -179,7 +179,6 @@ a[href]::after {
 
 /* Preview the simplified navigation with the existing menu triggers. */
 .sidebar-history-button,
-.conversation-header .conversation-heading-group,
 .conversation-header .provider-model-picker {
   display: none;
 }
@@ -197,27 +196,23 @@ a[href]::after {
   :is(.sidebar-server-name-label, .sidebar-server-name-chevron, .sidebar-server-name-sleep) {
   display: none;
 }
-.sidebar-search-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+/* The full search field sits below the title bar; creation remains in the title bar. */
+:root[data-openbot-color-scheme="light"] .sidebar-search-wrap > .sidebar-search-trigger {
+  width: 100%;
+  border: 1px solid rgba(55, 53, 49, 0.08);
+  border-radius: 999px;
+  background: #eeedea;
 }
-.sidebar-search-wrap > .sidebar-search-trigger,
-.sidebar-search-wrap > .sidebar-new-button {
-  display: inline-flex;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
-  justify-content: center;
-  border: 0;
-  border-radius: 50%;
-  padding: 0;
-  background: #eae9e6;
-  color: #565550;
-}
-.sidebar-search-wrap .sidebar-search-placeholder {
+.conversation-heading-group > :not(.conversation-title),
+.conversation-heading-group .conversation-title .agent-avatar {
   display: none;
+}
+.conversation-heading-group .conversation-title {
+  padding-inline: 8px;
+}
+/* Kobalte's original menu stays intact; only its prototype position changes. */
+[data-popper-positioner]:has(> .server-menu) {
+  transform: translate3d(var(--design-server-x, 8px), var(--design-server-y, 8px), 0) !important;
 }
 
 /* Keep the remaining panel control at the far edge of the title bar. */
@@ -226,9 +221,4 @@ a[href]::after {
 }
 .conversation-header .conversation-model-pending {
   display: none;
-}
-:root[data-openbot-color-scheme="light"] .sidebar-search-wrap > .sidebar-search-trigger {
-  border: 0;
-  border-radius: 50%;
-  background: #eae9e6;
 }
