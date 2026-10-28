@@ -32,6 +32,15 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
   let observedToolbar: Element | null = null;
   let observedLayer: Element | null = null;
   let selectionRange: Range | null = null;
+  // Reuse the original triggers, so their menus and keyboard behavior remain available in the preview.
+  const moved = new Map<Element, { parent: Node; next: Node | null }>();
+  function moveTrigger(selector: string, destination: Element | null) {
+    const trigger = document.querySelector(selector);
+    if (!trigger || !destination || trigger.parentElement === destination) return;
+    if (!moved.has(trigger) && trigger.parentNode)
+      moved.set(trigger, { parent: trigger.parentNode, next: trigger.nextSibling });
+    destination.append(trigger);
+  }
   let frame = 0;
   const resize = new ResizeObserver(schedule);
   const toolbarResize = new ResizeObserver(schedule);
@@ -41,6 +50,8 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
     frame = requestAnimationFrame(sync);
   }
   function sync() {
+    moveTrigger(".sidebar-server-name", document.querySelector(".window-rail-group"));
+    moveTrigger(".sidebar-new-button", document.querySelector(".sidebar-search-wrap"));
     const layer = document.querySelector<HTMLElement>(".selection-actions-layer");
     if (observedLayer !== layer) {
       layerObserver.disconnect();
@@ -141,6 +152,11 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
     window.removeEventListener("resize", schedule);
     window.removeEventListener("beforeunload", cleanup);
     Element.prototype.animate = originalAnimate;
+    for (const [element, origin] of moved) {
+      if (origin.parent.isConnected)
+        origin.parent.insertBefore(element, origin.next?.parentNode === origin.parent ? origin.next : null);
+    }
+    moved.clear();
     measure.remove();
   }
   window.addEventListener("beforeunload", cleanup, { once: true });
