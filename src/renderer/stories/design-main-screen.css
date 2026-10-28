@@ -114,3 +114,65 @@ a[href]::after {
 .selection-actions-layer[data-ready="true"] {
   transform: translateY(var(--design-selection-shift, 0px));
 }
+
+/* Visual direction: quiet cool surfaces, clear hierarchy, avatar-led color. */
+:root[data-openbot-color-scheme="light"] {
+  --openbot-bg-canvas: #f5f8fc;
+  --openbot-bg-frame: #eaf0f7;
+  --openbot-bg-sidebar: #f2f6fb;
+  --openbot-bg-native-sidebar: #f2f6fb;
+  --openbot-bg-control: #edf2f8;
+  --openbot-bg-control-hover: #e5edf7;
+  --openbot-bg-surface: #ffffff;
+  --openbot-bg-surface-raised: #ffffff;
+  --openbot-border: rgba(49, 73, 107, 0.09);
+  --openbot-border-strong: rgba(49, 73, 107, 0.17);
+  --openbot-text-primary: #19263b;
+  --openbot-text-secondary: #40516c;
+  --openbot-text-muted: #647793;
+  --openbot-text-placeholder: #627590;
+  --openbot-hover: rgba(54, 99, 160, 0.08);
+}
+
+:root[data-openbot-color-scheme="light"] .sidebar-search-trigger {
+  border: 1px solid rgba(65, 93, 128, 0.08);
+  border-radius: 9px;
+  background: #eaf0f7;
+}
+
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active:hover {
+  background: color-mix(in srgb, var(--design-agent-color, #3b93f0) 11%, #f2f6fb);
+}
+
+:root[data-openbot-color-scheme="light"] .message-entry-agent .ui-bubble-variant-default > .ui-bubble-content {
+  border-color: rgba(49, 73, 107, 0.08);
+  background: #ffffff;
+  color: #19263b;
+  box-shadow: 0 1px 2px rgba(38, 62, 96, 0.025);
+}
+
+:root[data-openbot-color-scheme="light"] .composer {
+  border: 1px solid rgba(49, 73, 107, 0.13);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(38, 62, 96, 0.04);
+}
+
+:root[data-openbot-color-scheme="light"] .composer:focus-within {
+  border-color: color-mix(in srgb, var(--design-agent-color, #3b93f0) 35%, #c5d2e1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--design-agent-color, #3b93f0) 9%, transparent);
+}
+
+:root[data-openbot-color-scheme="light"] .composer-button,
+:root[data-openbot-color-scheme="light"] .dictation-button {
+  background: #edf2f8;
+  color: #526782;
+}
+
+:root[data-openbot-color-scheme="light"] .selection-actions-bar {
+  border-color: rgba(49, 73, 107, 0.13);
+  box-shadow: 0 8px 24px rgba(38, 62, 96, 0.12);
+}
