@@ -25,6 +25,7 @@ import { spawnAgentDatabaseHost } from "./agent-database-host-process";
 import { agentDisplayEnvironment, hasSeparateAgentDisplay } from "./agent-display";
 import { type AgentHostSettingsService, createAgentHostSettings } from "./agent-host-settings";
 import { type BrowserProfileService, createBrowserProfileService } from "./browser-profile-service";
+import { forkWorkspacePath, isMacFork } from "./fork-profile";
 import { forkAllowsApplicationUpdates } from "./fork-update-policy";
 import { HostReleaseService, readInstallationMode } from "./host-release-service";
 import {
@@ -980,8 +981,14 @@ export async function createApplicationServices({
     join(app.getPath("userData"), AGENT_DEFAULTS_PREFERENCE_FILE),
   );
   await runCauseEffect(agentDefaults.load());
-  const store = new AgentStore(app.getPath("userData"), homedir(), new OpenBotDatabase(app.getPath("userData")), () =>
-    agentDefaults.get(),
+  const store = new AgentStore(
+    app.getPath("userData"),
+    homedir(),
+    new OpenBotDatabase(app.getPath("userData")),
+    () => agentDefaults.get(),
+    isMacFork(app.isPackaged, process.platform)
+      ? forkWorkspacePath(homedir(), app.getPath("userData"), !!app.commandLine.getSwitchValue("user-data-dir").trim())
+      : undefined,
   );
   // Phase marks for `dev:bench`, so a slow start shows which group of awaits it waited on. They
   // change nothing.

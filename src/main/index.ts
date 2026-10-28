@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
 import {
@@ -45,6 +46,7 @@ import {
 } from "./development-profile";
 import { stopStuckExitAfterLimit } from "./exit-watchdog";
 import { filePreviewPages } from "./file-preview-pages";
+import { forkProfilePath, isMacFork } from "./fork-profile";
 import { hostAllowsTenantLaunch } from "./host-update-coordinator";
 import { takeHostedServerEnvironment } from "./hosted-server-bootstrap";
 import { takeHostingDeveloperKey } from "./hosted-server-service";
@@ -199,6 +201,10 @@ if (configureLinuxPasswordStore())
   logger.info(`No Chromium keyring for "${process.env.XDG_CURRENT_DESKTOP ?? ""}"; using gnome-libsecret.`);
 if (commandLineUserDataDirectory) {
   app.setPath("userData", resolve(commandLineUserDataDirectory));
+} else if (isMacFork(app.isPackaged, process.platform)) {
+  const profile = forkProfilePath(app.getPath("appData"));
+  mkdirSync(profile, { recursive: true, mode: 0o700 });
+  app.setPath("userData", profile);
 } else if (!app.isPackaged) {
   app.setPath(
     "userData",
@@ -211,6 +217,7 @@ if (commandLineUserDataDirectory) {
     ),
   );
 }
+if (isMacFork(app.isPackaged, process.platform)) app.setPath("sessionData", app.getPath("userData"));
 app.setName("OpenBot");
 app.enableSandbox();
 if (process.platform === "win32") app.setAppUserModelId("app.openbot.desktop");
