@@ -88,9 +88,13 @@ a[href]::after {
 .conversation-panel {
   --conversation-column-width: 720px;
 }
-.message-entry .message-copy {
+.message-entry .message-copy,
+[data-slot="bubble"][data-author="user"] .message-copy,
+.composer .composer-editor-surface,
+.composer .composer-editor-placeholder {
   font-family: "Alegreya Sans", sans-serif;
   font-size: var(--fork-message-font-size);
+  font-weight: 450;
   line-height: 1.35;
 }
 

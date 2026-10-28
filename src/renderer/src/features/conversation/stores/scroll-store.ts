@@ -23,6 +23,7 @@ import type { VirtualItem } from "@tanstack/virtual-core";
 import { createEffect, createMemo, createSignal, onCleanup, untrack } from "solid-js";
 import { groupAgentMessageMarkers, markOpenAgentMessages } from "../agent-message-timeline";
 import type { ConversationProps, ConversationTarget } from "../conversation-types";
+import { isInternalInFlightMessage } from "../in-flight-message";
 import {
   expandRoutineRunGroups,
   groupRoutineRunMarkers,
@@ -76,14 +77,25 @@ export function createScrollStore(deps: ScrollStoreDeps) {
   const answeredTurns = createMemo(
     () => new Set(deps.props.messages.flatMap((message) => (isTurnAnswer(message) ? [message.turnId] : []))),
   );
-  const shownMessages = createMemo(() =>
-    deps.props.messages.filter(
-      (message) =>
+  let trackedTurnId: string | null | undefined;
+  const streamedMessageIds = new Set<string>();
+  const shownMessages = createMemo(() => {
+    const activeTurnId = deps.props.activeTurnId;
+    if (trackedTurnId !== activeTurnId) {
+      trackedTurnId = activeTurnId;
+      streamedMessageIds.clear();
+    }
+    return deps.props.messages.filter((message) => {
+      if (activeTurnId && message.author === "agent" && message.kind === "text" && message.streaming)
+        streamedMessageIds.add(message.id);
+      return (
+        !isInternalInFlightMessage(message, activeTurnId, streamedMessageIds.has(message.id)) &&
         message.kind !== "thinking" &&
         !(message.kind === "memory-changes" && answeredTurns().has(message.turnId)) &&
-        !silentAgentAnswer(message),
-    ),
-  );
+        !silentAgentAnswer(message)
+      );
+    });
+  });
   const routineRunTurns = createMemo(() => routineRunTurnMessages(deps.props.messages, shownMessages()));
   /* The messages of a routine run follow its row and open and close with it. */
   const drawnMessages = createMemo(() => [

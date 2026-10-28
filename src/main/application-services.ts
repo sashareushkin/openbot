@@ -25,6 +25,7 @@ import { spawnAgentDatabaseHost } from "./agent-database-host-process";
 import { agentDisplayEnvironment, hasSeparateAgentDisplay } from "./agent-display";
 import { type AgentHostSettingsService, createAgentHostSettings } from "./agent-host-settings";
 import { type BrowserProfileService, createBrowserProfileService } from "./browser-profile-service";
+import { forkAllowsApplicationUpdates } from "./fork-update-policy";
 import { HostReleaseService, readInstallationMode } from "./host-release-service";
 import {
   CONTAINER_UPDATE_PATHS,
@@ -2750,7 +2751,9 @@ export async function createApplicationServices({
       process.platform === "linux" &&
       (process.env.OPENBOT_HOSTED_SERVER === "1" || installationMode === "self") &&
       existsSync(HOSTED_UPDATE_TRIGGER));
+  // This personal macOS fork does not install the upstream desktop releases.
   const updatesEnabled =
+    forkAllowsApplicationUpdates(process.platform) &&
     app.isPackaged &&
     !isNixStoreInstall() &&
     (hostedInstaller || (supportsInstalledUpdates(process.platform) && updateMetadataAvailable)) &&
