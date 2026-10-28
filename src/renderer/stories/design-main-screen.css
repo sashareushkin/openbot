@@ -221,3 +221,11 @@ a[href]::after {
 .conversation-header .conversation-model-pending {
   display: none;
 }
+
+/* The model selector is hidden, so its separator is no longer needed. */
+.app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle {
+  margin-left: 0;
+}
+.app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle::before {
+  content: none;
+}
