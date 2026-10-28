@@ -74,3 +74,43 @@ a[href]::after {
   background: color-mix(in srgb, var(--design-agent-color, #388af0) 30%, var(--openbot-bg-surface));
   color: var(--openbot-text-primary);
 }
+
+@font-face {
+  font-family: "Alegreya Sans Preview";
+  src: url("/studio/fonts/AlegreyaSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alegreya Sans Preview";
+  src: url("/studio/fonts/AlegreyaSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alegreya Sans Preview";
+  src: url("/studio/fonts/AlegreyaSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+.conversation-panel {
+  --conversation-column-width: 720px;
+}
+.message-entry .message-copy {
+  font-family: "Alegreya Sans Preview", sans-serif;
+  font-size: 16px;
+  line-height: 1.35;
+}
+/* Allow translated actions to take their natural width; on narrow screens the bar scrolls. */
+.selection-actions-bar {
+  width: max-content !important;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+.selection-actions-presets:not(.selection-actions-presets-hidden),
+.selection-actions-presets-expanded .selection-actions-more-presets {
+  max-width: none !important;
+}
+.selection-actions-layer[data-ready="true"] {
+  transform: translateY(var(--design-selection-shift, 0px));
+}

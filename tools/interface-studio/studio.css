@@ -411,3 +411,13 @@ button.primary {
     grid-template-columns: 1fr;
   }
 }
+
+/* The screen view uses the full workspace and has no inspector. */
+.viewer {
+  min-height: calc(100vh - 69px);
+}
+.principles-text {
+  white-space: pre-wrap;
+  font: inherit;
+  line-height: 1.65;
+}

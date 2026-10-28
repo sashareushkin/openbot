@@ -29,13 +29,46 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
   });
   document.body.append(measure);
   let observed: Element | null = null;
+  let observedToolbar: Element | null = null;
+  let observedLayer: Element | null = null;
+  let selectionRange: Range | null = null;
   let frame = 0;
   const resize = new ResizeObserver(schedule);
+  const toolbarResize = new ResizeObserver(schedule);
+  const layerObserver = new MutationObserver(schedule);
   function schedule() {
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(sync);
   }
   function sync() {
+    const layer = document.querySelector<HTMLElement>(".selection-actions-layer");
+    if (observedLayer !== layer) {
+      layerObserver.disconnect();
+      observedLayer = layer;
+      if (layer) layerObserver.observe(layer, { attributes: true, attributeFilter: ["data-ready", "style"] });
+    }
+    const bar = layer?.querySelector<HTMLElement>(".selection-actions-bar");
+    if (layer && bar && selectionRange?.startContainer.isConnected) {
+      if (observedToolbar !== bar) {
+        toolbarResize.disconnect();
+        toolbarResize.observe(bar);
+        observedToolbar = bar;
+      }
+      const first = Array.from(selectionRange.getClientRects()).find((rect) => rect.width > 0);
+      if (first) {
+        const height = bar.getBoundingClientRect().height;
+        const above = first.top - height - 8;
+        const baseTop = parseFloat(layer.style.top) || 0;
+        const target = above >= 12 ? above : baseTop;
+        const shift = `${target - baseTop}px`;
+        if (layer.style.getPropertyValue("--design-selection-shift") !== shift) {
+          layer.style.setProperty("--design-selection-shift", shift);
+        }
+      }
+    } else if (!layer && observedToolbar) {
+      toolbarResize.disconnect();
+      observedToolbar = null;
+    }
     const selected =
       document.querySelector<HTMLElement>(".sidebar-agent-item:has(.agent-row[aria-pressed='true'])")?.dataset.chatId ??
       document
@@ -84,11 +117,28 @@ if (new URLSearchParams(window.location.search).get("id") === "design-main-scree
     attributeFilter: ["aria-pressed"],
   });
   document.addEventListener("input", schedule);
+  function onSelection() {
+    const selection = window.getSelection();
+    if (selection && !selection.isCollapsed && selection.rangeCount) {
+      const range = selection.getRangeAt(0);
+      const element = range.startContainer.parentElement;
+      if (element?.closest("[data-selection-message-id]")) selectionRange = range.cloneRange();
+    }
+    schedule();
+  }
+  document.addEventListener("selectionchange", onSelection);
+  window.addEventListener("scroll", schedule, true);
+  window.addEventListener("resize", schedule);
   function cleanup() {
     observer.disconnect();
     resize.disconnect();
+    toolbarResize.disconnect();
+    layerObserver.disconnect();
     cancelAnimationFrame(frame);
     document.removeEventListener("input", schedule);
+    document.removeEventListener("selectionchange", onSelection);
+    window.removeEventListener("scroll", schedule, true);
+    window.removeEventListener("resize", schedule);
     window.removeEventListener("beforeunload", cleanup);
     Element.prototype.animate = originalAnimate;
     measure.remove();

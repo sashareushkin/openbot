@@ -23,12 +23,8 @@ Open `src/renderer/stories/design-main-screen.css` and add CSS rules there. Stor
 
 ## Use
 
-- Open a screen from the map. Click **Выбрать элемент** and then click inside the preview.
-- Change a property or enter CSS declarations. Select **Этот экран** or **Все экраны**. The generated selector is based on the current DOM; it may not match every story or survive upstream changes. Check the map after each global edit.
-- **Принципы интерфейса** changes selected OpenBot color, font, and motion variables plus the root font size in the light theme. Some component styles use other values and may not change.
-- Changes are saved in this browser's local storage. They are not written to source files. Use **Экспорт изменений** to download a JSON file for handoff or backup, and **Импорт** to restore it. Clearing browser storage deletes unexported changes. Browser storage is tied to the Storybook URL and port, so export before changing ports.
-- CSS in the studio is a proposal, not production code. A developer must apply and check the result in the desktop app.
+Open a screen from the map to view and interact with the prototype. The studio is read-only: visual changes are made in the prototype code. The principles page shows the saved design document. Previously saved browser overrides remain untouched and are applied to previews, with a notice when present.
 
-The studio and its embedded Storybook run locally. The previews use Storybook fixtures and are not the live desktop application. No production settings or data are changed.
+The bundled Alegreya Sans fonts are distributed under the SIL Open Font License; see `fonts/OFL.txt`.
 
-The map includes the full application shell with sample data, the actual chat message row component, and the notifications settings view. The main-screen preview uses the real app and a local mock bridge. Its sample content and window controls differ from a live macOS window. Some full conversation and settings stories currently fail in the upstream Storybook fixtures; they are not included until verified.
+The studio and its embedded Storybook run locally. The previews use sample data and are not the live desktop application. The main-screen preview uses the real app and a local mock bridge. Its sample content and window controls differ from a live macOS window.
