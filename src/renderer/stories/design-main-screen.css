@@ -239,3 +239,108 @@ a[href]::after {
 .sidebar-topbar-actions {
   margin-left: auto;
 }
+
+/* Design variations are preview-only and keep the same interaction structure. */
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] {
+  --openbot-bg-canvas: #ffffff;
+  --openbot-bg-frame: #f1f2f3;
+  --openbot-bg-sidebar: #f7f7f8;
+  --openbot-bg-native-sidebar: #f7f7f8;
+  --openbot-bg-control: #f0f1f2;
+  --openbot-bg-control-hover: #e8e9eb;
+  --openbot-text-primary: #202124;
+  --openbot-text-secondary: #484a50;
+  --openbot-text-muted: #70737a;
+  --openbot-text-placeholder: #70737a;
+  --openbot-border: rgba(38, 42, 50, 0.09);
+  --openbot-border-strong: rgba(38, 42, 50, 0.16);
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] .sidebar-search-trigger {
+  background: #eceef0;
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active:hover {
+  background: #eaecef;
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="white"]
+  .message-entry-agent
+  .ui-bubble-variant-muted
+  > .ui-bubble-content {
+  background: #f7f8f9;
+  border-color: #eff0f1;
+}
+
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] {
+  --openbot-bg-canvas: #f5f5f6;
+  --openbot-bg-frame: #e9e9eb;
+  --openbot-bg-sidebar: #eeeeef;
+  --openbot-bg-native-sidebar: #eeeeef;
+  --openbot-bg-control: #e5e6e8;
+  --openbot-bg-control-hover: #dedfe1;
+  --openbot-text-primary: #26272b;
+  --openbot-text-secondary: #505157;
+  --openbot-text-muted: #707177;
+  --openbot-text-placeholder: #707177;
+  --openbot-border: rgba(38, 39, 43, 0.1);
+  --openbot-border-strong: rgba(38, 39, 43, 0.18);
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-search-trigger {
+  background: #e5e6e8;
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="soft"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active:hover {
+  background: #ffffff;
+}
+
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] {
+  --openbot-bg-canvas: #ffffff;
+  --openbot-bg-frame: #f7f7f7;
+  --openbot-bg-sidebar: #ffffff;
+  --openbot-bg-native-sidebar: #ffffff;
+  --openbot-bg-control: #f6f6f6;
+  --openbot-bg-control-hover: #ededed;
+  --openbot-text-primary: #242424;
+  --openbot-text-secondary: #4d4d4d;
+  --openbot-text-muted: #727272;
+  --openbot-text-placeholder: #727272;
+  --openbot-border: rgba(30, 30, 30, 0.1);
+  --openbot-border-strong: rgba(30, 30, 30, 0.17);
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-search-trigger {
+  background: #f7f7f7;
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active,
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
+  .sidebar-pinned-item[data-pinned-key^="agent:"]
+  .agent-row-active:hover {
+  background: #f1f1f1;
+}
+:root[data-openbot-color-scheme="light"][data-visual-variant="outline"]
+  .message-entry-agent
+  .ui-bubble-variant-muted
+  > .ui-bubble-content {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+:root[data-openbot-color-scheme="light"][data-visual-variant]:not([data-visual-variant="current"]) .composer-button,
+:root[data-openbot-color-scheme="light"][data-visual-variant]:not([data-visual-variant="current"]) .dictation-button {
+  background: var(--openbot-bg-control);
+}

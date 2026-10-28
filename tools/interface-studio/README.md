@@ -23,7 +23,7 @@ Open `src/renderer/stories/design-main-screen.css` and add CSS rules there. Stor
 
 ## Use
 
-Open a screen from the map to view and interact with the prototype. The studio is read-only: visual changes are made in the prototype code. The principles page shows the saved design document. Previously saved browser overrides remain untouched and are applied to previews, with a notice when present.
+Open a screen from the map to view and interact with the prototype. On the main screen, use the appearance buttons to compare three light variants and the previous version without reloading the app or losing the current draft. The selection lasts until the studio page is reloaded. The studio is read-only: visual changes are made in the prototype code. The principles page shows the saved design document. Previously saved browser overrides remain untouched and are applied to previews, with a notice when present.
 
 The bundled Alegreya Sans fonts are distributed under the SIL Open Font License; see `fonts/OFL.txt`.
 

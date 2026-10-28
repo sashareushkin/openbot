@@ -20,6 +20,19 @@ const screens = [
 ];
 const content = document.querySelector("#content");
 let currentScreen;
+const visualVariants = [
+  { id: "white", name: "Чистый", description: "Белый фон и мягкие поверхности" },
+  { id: "soft", name: "Мягкий", description: "Нейтральный серый и белые сообщения" },
+  { id: "outline", name: "Свободный", description: "Белый фон и открытые ответы" },
+  { id: "current", name: "Текущий", description: "Предыдущий тёплый вариант" },
+];
+let activeVariant = "white";
+function applyVariant(frame) {
+  if (frame.dataset.screen === "design-main-screen--main" && frame.contentDocument?.documentElement) {
+    frame.contentDocument.documentElement.dataset.visualVariant = activeVariant;
+  }
+}
+
 // Previously saved local edits remain in place and are never deleted or modified by the viewer.
 let saved = { tokens: {}, rules: [] };
 try {
@@ -56,6 +69,7 @@ function wireFrames() {
     frame.addEventListener(
       "load",
       () => {
+        applyVariant(frame);
         applySaved(
           frame,
           screens.find((screen) => screen.id === frame.dataset.screen),
@@ -108,8 +122,24 @@ function renderMap() {
   wireFrames();
 }
 function renderScreen() {
-  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div></div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
+  const choices =
+    currentScreen.id === "design-main-screen--main"
+      ? `<div class="variant-picker" role="group" aria-label="Вариант оформления"><span class="variant-label">Оформление</span>${visualVariants.map((variant) => `<button type="button" class="variant-option" data-variant="${variant.id}" aria-pressed="${variant.id === activeVariant}" title="${variant.description}">${variant.name}</button>`).join("")}</div>`
+      : "";
+  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div>${choices}</div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
   content.querySelector("#back").onclick = () => navigate("map");
+  content.querySelectorAll("[data-variant]").forEach(
+    (button) =>
+      void button.addEventListener("click", () => {
+        activeVariant = button.dataset.variant;
+        content
+          .querySelectorAll("[data-variant]")
+          .forEach(
+            (option) => void option.setAttribute("aria-pressed", String(option.dataset.variant === activeVariant)),
+          );
+        content.querySelectorAll("iframe[data-screen]").forEach(applyVariant);
+      }),
+  );
   wireFrames();
 }
 async function renderPrinciples() {

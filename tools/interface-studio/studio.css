@@ -421,3 +421,41 @@ button.primary {
   font: inherit;
   line-height: 1.65;
 }
+
+.variant-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #e2e4e8;
+  border-radius: 12px;
+  background: #fff;
+}
+.variant-label {
+  padding: 0 8px;
+  color: #81858d;
+  font-size: 11px;
+}
+.variant-option {
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: transparent;
+  color: #666a72;
+  font-size: 12px;
+}
+.variant-option[aria-pressed="true"] {
+  background: #eceef1;
+  color: #202226;
+  font-weight: 600;
+}
+.variant-option:focus-visible {
+  outline: 2px solid #687c9c;
+  outline-offset: 1px;
+}
+
+.editor-title {
+  flex-wrap: wrap;
+  gap: 16px;
+}
