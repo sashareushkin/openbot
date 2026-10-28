@@ -203,8 +203,7 @@ a[href]::after {
   border-radius: 999px;
   background: #eeedea;
 }
-.conversation-heading-group > :not(.conversation-title),
-.conversation-heading-group .conversation-title .agent-avatar {
+.conversation-heading-group > :not(.conversation-title) {
   display: none;
 }
 .conversation-heading-group .conversation-title {
