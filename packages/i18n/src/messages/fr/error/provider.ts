@@ -61,6 +61,9 @@ export const messages = {
   "error.provider.runtimesUnsupported":
     "Les environnements d’exécution des fournisseurs ne sont pas disponibles sur cette plateforme.",
   "error.provider.closing": "OpenBot se ferme.",
+  "error.provider.removeWhileOn": "Désactivez le fournisseur avant de supprimer son téléchargement.",
+  "error.provider.removeWhileDownloading": "Attendez la fin du téléchargement, puis supprimez-le.",
+  "error.provider.removeIncomplete": "Un programme utilise des fichiers de cette CLI. Fermez-le, puis réessayez.",
   "error.provider.cliOverride": "Supprimez le chemin CLI explicite avant de mettre à jour dans OpenBot.",
   "error.provider.runtimeUpdateIncomplete": "La mise à jour de l’environnement d’exécution ne s’est pas terminée.",
   "error.provider.downloadHttp": "Le téléchargement de l’environnement d’exécution a échoué avec HTTP {status}.",
@@ -111,6 +114,7 @@ export const messages = {
   "error.provider.headerNameTooLong": "Un nom d’en-tête est trop long.",
   "error.provider.headerNameDuplicate": "Deux en-têtes ont le même nom.",
   "error.provider.headerValueInvalid": "Une valeur d’en-tête est manquante ou trop longue.",
+  "error.provider.headerValueMissing": "Saisissez une valeur pour l’en-tête {name}.",
   "error.provider.apiKeyTooLong": "La clé d’API est trop longue.",
   "error.provider.localOnly": "Les fournisseurs ne peuvent être modifiés que sur l’ordinateur qui exécute les agents.",
   "error.provider.keyRequired": "Une clé de fournisseur est requise.",

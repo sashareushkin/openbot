@@ -1,9 +1,9 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { z } from "zod";
 import { BROWSER_DYNAMIC_TOOLS, OPENBOT_BROWSER_NAMESPACE } from "../browser-tools";
 import { OPENBOT_DYNAMIC_TOOLS, OPENBOT_TOOL_DEFINITIONS } from "../openbot-tools";
 import type { DynamicToolCallParams } from "../protocol";
+import { advertisedJsonSchema } from "./advertised-json-schema";
 import { toolGuidance } from "./tool-guidance";
 
 /** Discovery changes visibility only. Original definitions and execution owners stay authoritative. */
@@ -81,7 +81,7 @@ export const VISIBLE_DYNAMIC_TOOLS = [
       type: "function" as const,
       name: definition.name,
       description: definition.description,
-      inputSchema: z.toJSONSchema(z.strictObject(definition.shape), { target: "draft-7" }),
+      inputSchema: advertisedJsonSchema(z.strictObject(definition.shape)),
     })),
   },
 ];
@@ -129,11 +129,11 @@ export function resolveDeferredTool(params: DynamicToolCallParams): DynamicToolC
   return { ...params, namespace: entry.namespace, tool: entry.tool, arguments: parsed.data.arguments };
 }
 
-function toolGuidanceFor(entries: readonly (typeof BUILTIN_TOOL_CATALOG)[number][], agent: AgentSummary): string[] {
-  return [...new Set(entries.map((entry) => toolGuidance(entry.namespace, entry.tool, agent)))].filter(Boolean);
+function toolGuidanceFor(entries: readonly (typeof BUILTIN_TOOL_CATALOG)[number][]): string[] {
+  return [...new Set(entries.map((entry) => toolGuidance(entry.namespace, entry.tool)))].filter(Boolean);
 }
 
-export function discoverTools(params: DynamicToolCallParams, agent: AgentSummary) {
+export function discoverTools(params: DynamicToolCallParams) {
   if (params.tool === "tool_search") {
     const parsed = searchSchema.safeParse(params.arguments);
     if (!parsed.success) throw new Error(sourceText("error.agent.toolRequestInvalid"));
@@ -168,7 +168,7 @@ export function discoverTools(params: DynamicToolCallParams, agent: AgentSummary
         ? { name: entry.name, description: entry.description, inputSchema: entry.inputSchema }
         : { name: entry.name, description: entry.description.slice(0, 180) },
     );
-    const guidance = toolGuidanceFor([...ready], agent);
+    const guidance = toolGuidanceFor([...ready]);
     const result = guidance.length > 0 ? { tools, guidance } : { tools };
     return found.some(({ entry }) => entry.namespace === OPENBOT_BROWSER_NAMESPACE)
       ? result
@@ -179,6 +179,6 @@ export function discoverTools(params: DynamicToolCallParams, agent: AgentSummary
   const entries = [...new Set(parsed.data.names)].map(requireTool);
   return {
     tools: entries.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })),
-    guidance: toolGuidanceFor(entries, agent),
+    guidance: toolGuidanceFor(entries),
   };
 }

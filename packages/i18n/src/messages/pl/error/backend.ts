@@ -193,6 +193,8 @@ export const messages = {
   "error.backend.mcpServerNameTaken": "Serwer MCP o nazwie {name} już istnieje.",
   "error.backend.mcpServerNoAnswer": "Serwer nie odpowiedział w ciągu {seconds} s.",
   "error.backend.mcpSignInNotAccepted": "Serwer nie zaakceptował tego logowania.",
+  "error.backend.mcpSignInClientRefused":
+    "Serwer logowania nie zaakceptował OpenBot przy kończeniu logowania. Zaloguj się ponownie: OpenBot zarejestruje się ponownie na serwerze.",
   "error.backend.mcpCommandNotFound": "Nie znaleziono polecenia: {command}",
   "error.backend.mcpRegistrationRefused":
     "Serwer logowania nie akceptuje jeszcze OpenBot jako aplikacji. Przyczyną nie jest twoje konto. Połącz się w inny sposób, na przykład przez lokalny serwer MCP.",
@@ -317,6 +319,14 @@ export const messages = {
   "error.backend.taskNotFound": "To zadanie nie jest dostępne.",
   "error.backend.taskClosed": "To zadanie jest zamknięte. Otwórz je ponownie, aby wysłać wiadomość.",
   "error.backend.taskStillRunning": "To zadanie nadal działa. Poczekaj, aż się zatrzyma, a potem je zamknij.",
+  "error.backend.threadNotFound": "Ten wątek jest niedostępny.",
+  "error.backend.threadStillRunning": "Ten wątek nadal działa. Zatrzymaj go, a potem spróbuj ponownie.",
+  "error.backend.threadArchived": "Ten wątek jest zarchiwizowany. Przywróć go, aby wysłać wiadomość.",
+  "error.backend.threadTitleRequired": "Nadaj wątkowi krótki tytuł.",
+  "error.backend.threadOpenLimitReached":
+    "Liczba otwartych wątków tego agenta: {count}. Zarchiwizuj wątek, a potem rozpocznij lub przywróć inny.",
+  "error.backend.threadRemoteUnsupported": "Wątki są dostępne tylko dla agentów na tym komputerze.",
+  "error.backend.threadMoveRefused": "W nowym wątku można uruchomić tylko wiadomość wysłaną wyłącznie do tego agenta.",
   "error.backend.taskTitleRequired": "Nadaj zadaniu krótki tytuł.",
   "error.backend.taskToolInvalid":
     "Nadaj zadaniu tytuł o długości maksymalnie 120 znaków i opis, który mówi, co zrobić.",

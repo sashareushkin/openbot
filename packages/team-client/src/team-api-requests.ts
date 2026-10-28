@@ -41,12 +41,13 @@ import {
   isRoutineFlowCanvas,
   isRoutineFlowLink,
   isRoutineRun,
+  type LocalBrowserSecretResponse,
   type OpenBotDesktopApi,
   type QueuedMessageReceipt,
   type RemoteAgentImportResult,
+  type RenameAgentTaskInput,
   type ReorderQueueInput,
   type RespondToApprovalInput,
-  type RespondToBrowserSecretInput,
   type RespondToBrowserTakeoverInput,
   remoteBrowserSecretResponse,
   type SetAgentMemoryInclusionInput,
@@ -65,6 +66,8 @@ import {
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
 } from "@openbot/contracts/team-protocol/agent-memories-v1";
 import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
+import { AGENT_THREADS_ROUTES } from "@openbot/contracts/team-protocol/agent-threads-v1";
+import { BROWSER_SECRET_VAULT_ROUTES } from "@openbot/contracts/team-protocol/browser-secret-vault-v1";
 import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
 import { CONTEXT_RESET_ROUTES } from "@openbot/contracts/team-protocol/context-reset-v1";
 import { ROUTINE_FLOWS_ROUTES } from "@openbot/contracts/team-protocol/routine-flows-v1";
@@ -224,6 +227,24 @@ export const agentTaskControl = Effect.fn("TeamClient.agentTaskControl")(functio
   return yield* teamCall(() => request("POST", AGENT_TASKS_ROUTES[action], ignoreResponse, { agentId, taskId }));
 });
 
+/** Renames a side thread. Send it only to a host that serves `agent-threads-v1`. */
+export const renameAgentThread = Effect.fn("TeamClient.renameAgentThread")(function* (
+  request: TeamApiRequest,
+  { agentId, taskId, title }: RenameAgentTaskInput,
+): Effect.fn.Return<void, TeamRequestError> {
+  return yield* teamCall(() =>
+    request("POST", AGENT_THREADS_ROUTES.rename, ignoreResponse, { agentId, taskId, title }),
+  );
+});
+
+/** Deletes a side thread for good. Send it only to a host that serves `agent-threads-v1`. */
+export const deleteAgentThread = Effect.fn("TeamClient.deleteAgentThread")(function* (
+  request: TeamApiRequest,
+  { agentId, taskId }: AgentTaskInput,
+): Effect.fn.Return<void, TeamRequestError> {
+  return yield* teamCall(() => request("POST", AGENT_THREADS_ROUTES.delete, ignoreResponse, { agentId, taskId }));
+});
+
 /** Sends a Grok Bot export to the host. Send it only to a host that serves `agent-import-v1`. */
 export const stageAgentImport = Effect.fn("TeamClient.stageAgentImport")(function* (
   request: TeamApiRequest,
@@ -285,12 +306,15 @@ export const respondToBrowserTakeover = Effect.fn("TeamClient.respondToBrowserTa
 
 export const respondToBrowserSecret = Effect.fn("TeamClient.respondToBrowserSecret")(function* (
   request: TeamApiRequest,
-  input: RespondToBrowserSecretInput,
+  input: LocalBrowserSecretResponse,
 ): Effect.fn.Return<void, TeamRequestError> {
-  // Only the released fields: `saveToVault` is for the Vault of the local computer.
-  return yield* teamCall(() =>
-    request("POST", BROWSER_SECRET_RESPONSE_PATH, ignoreResponse, { ...remoteBrowserSecretResponse(input) }),
-  );
+  // The released route carries only the released fields. A save goes on `browser-secret-vault-v1`, which
+  // the caller offers only to an owner or admin of a host that serves it.
+  const path =
+    input.decision === "submit" && input.saveToVault
+      ? BROWSER_SECRET_VAULT_ROUTES.respond
+      : BROWSER_SECRET_RESPONSE_PATH;
+  return yield* teamCall(() => request("POST", path, ignoreResponse, { ...remoteBrowserSecretResponse(input) }));
 });
 
 /** The channel calls of the desktop IPC surface, which a remote desktop sends to the host the same way. */

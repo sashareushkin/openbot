@@ -187,6 +187,8 @@ export const messages = {
   "error.backend.mcpServerNameTaken": "{name} adında bir MCP sunucusu zaten mevcut.",
   "error.backend.mcpServerNoAnswer": "Sunucu {seconds} saniye içinde yanıt vermedi.",
   "error.backend.mcpSignInNotAccepted": "Sunucu bu oturum açmayı kabul etmedi.",
+  "error.backend.mcpSignInClientRefused":
+    "Oturum açma sunucusu, oturum açma tamamlanırken OpenBot'u kabul etmedi. Yeniden oturum açın: OpenBot sunucuya yeniden kaydolur.",
   "error.backend.mcpCommandNotFound": "Komut bulunamadı: {command}",
   "error.backend.mcpRegistrationRefused":
     "Oturum açma sunucusu OpenBot'u henüz bir uygulama olarak kabul etmiyor. Hesabınız bunun nedeni değildir. Yerel bir MCP sunucusu gibi bağlanmanın başka bir yolunu kullanın.",
@@ -311,6 +313,15 @@ export const messages = {
   "error.backend.taskNotFound": "Bu görev kullanılamıyor.",
   "error.backend.taskClosed": "Bu görev kapalı. Mesaj göndermek için yeniden açın.",
   "error.backend.taskStillRunning": "Bu görev hâlâ çalışıyor. Durmasını bekleyin, ardından kapatın.",
+  "error.backend.threadNotFound": "Bu mesaj dizisi kullanılamıyor.",
+  "error.backend.threadStillRunning": "Bu mesaj dizisi hâlâ çalışıyor. Durdurun, ardından yeniden deneyin.",
+  "error.backend.threadArchived": "Bu mesaj dizisi arşivlendi. Mesaj göndermek için geri yükleyin.",
+  "error.backend.threadTitleRequired": "Mesaj dizisine kısa bir başlık verin.",
+  "error.backend.threadOpenLimitReached":
+    "Bu ajanın {count} açık mesaj dizisi var. Bir mesaj dizisini arşivleyin, ardından başka birini başlatın veya geri yükleyin.",
+  "error.backend.threadRemoteUnsupported": "Mesaj dizileri yalnızca bu bilgisayardaki ajanlar için kullanılabilir.",
+  "error.backend.threadMoveRefused":
+    "Yeni bir mesaj dizisinde yalnızca, doğrudan ve tek başına bu ajana gönderdiğiniz bir mesaj çalışabilir.",
   "error.backend.taskTitleRequired": "Göreve kısa bir başlık verin.",
   "error.backend.taskToolInvalid":
     "Göreve en fazla 120 karakterlik bir başlık ve ne yapılacağını anlatan kısa bir talimat verin.",

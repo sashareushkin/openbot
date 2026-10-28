@@ -175,6 +175,8 @@ export const messages = {
   "error.backend.mcpServerNameTaken": "名为 {name} 的 MCP 服务器已存在。",
   "error.backend.mcpServerNoAnswer": "服务器未在 {seconds} 秒内响应。",
   "error.backend.mcpSignInNotAccepted": "服务器未接受该登录。",
+  "error.backend.mcpSignInClientRefused":
+    "完成登录时，登录服务器未接受 OpenBot。请重新登录，OpenBot 会重新向服务器注册。",
   "error.backend.mcpCommandNotFound": "未找到命令：{command}",
   "error.backend.mcpRegistrationRefused":
     "登录服务器尚未接受 OpenBot 作为应用，这与你的账号无关。请改用其他连接方式，例如本地 MCP 服务器。",
@@ -285,6 +287,13 @@ export const messages = {
   "error.backend.taskNotFound": "该任务不可用。",
   "error.backend.taskClosed": "该任务已关闭，请重新打开后再发送消息。",
   "error.backend.taskStillRunning": "该任务仍在运行。请等它停止后再关闭。",
+  "error.backend.threadNotFound": "该话题不可用。",
+  "error.backend.threadStillRunning": "该话题仍在运行。请先停止它，然后重试。",
+  "error.backend.threadArchived": "该话题已归档，请恢复后再发送消息。",
+  "error.backend.threadTitleRequired": "请给话题起一个简短的标题。",
+  "error.backend.threadOpenLimitReached": "该助手有 {count} 个未归档的话题。请归档一个话题，再启动或恢复其他话题。",
+  "error.backend.threadRemoteUnsupported": "话题仅适用于本电脑上的助手。",
+  "error.backend.threadMoveRefused": "只有你单独发给该助手的消息才能在新话题中运行。",
   "error.backend.taskTitleRequired": "请给任务起一个简短的标题。",
   "error.backend.taskToolInvalid": "标题不超过 120 个字符，并写明要做什么。",
   "error.backend.taskOwnChatOnly": "只能在自己的对话中启动任务。频道、消息对话或其他任务都无法启动任务。",

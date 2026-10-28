@@ -185,6 +185,8 @@ export const messages = {
   "error.backend.mcpServerNameTaken": "{name}(이)라는 MCP 서버가 이미 있어요.",
   "error.backend.mcpServerNoAnswer": "서버가 {seconds}초 안에 응답하지 않았어요.",
   "error.backend.mcpSignInNotAccepted": "서버가 해당 로그인을 수락하지 않았어요.",
+  "error.backend.mcpSignInClientRefused":
+    "로그인을 완료할 때 로그인 서버가 OpenBot을 받아들이지 않았어요. 다시 로그인하세요. OpenBot이 서버에 다시 등록해요.",
   "error.backend.mcpCommandNotFound": "명령을 찾을 수 없어요: {command}",
   "error.backend.mcpRegistrationRefused":
     "로그인 서버가 아직 OpenBot을 앱으로 허용하지 않아요. 계정 문제가 아니에요. 로컬 MCP 서버처럼 다른 방법으로 연결하세요.",
@@ -305,6 +307,14 @@ export const messages = {
   "error.backend.taskNotFound": "이 작업을 사용할 수 없어요.",
   "error.backend.taskClosed": "이 작업은 닫혀 있어요. 메시지를 보내려면 다시 여세요.",
   "error.backend.taskStillRunning": "이 작업이 아직 실행 중이에요. 중지될 때까지 기다린 후 닫으세요.",
+  "error.backend.threadNotFound": "이 스레드를 사용할 수 없어요.",
+  "error.backend.threadStillRunning": "이 스레드가 아직 실행 중이에요. 중지한 다음 다시 시도하세요.",
+  "error.backend.threadArchived": "이 스레드는 보관되어 있어요. 메시지를 보내려면 복원하세요.",
+  "error.backend.threadTitleRequired": "스레드에 짧은 제목을 지정하세요.",
+  "error.backend.threadOpenLimitReached":
+    "이 에이전트에는 열린 스레드가 {count}개 있어요. 스레드 하나를 보관한 후 다른 스레드를 시작하거나 복원하세요.",
+  "error.backend.threadRemoteUnsupported": "스레드는 이 컴퓨터의 에이전트에서만 사용할 수 있어요.",
+  "error.backend.threadMoveRefused": "이 에이전트에게만 보낸 메시지만 새 스레드에서 실행할 수 있어요.",
   "error.backend.taskTitleRequired": "작업에 짧은 제목을 지정하세요.",
   "error.backend.taskToolInvalid": "작업에 120자 이하의 제목과 할 일을 설명하는 지시문을 지정하세요.",
   "error.backend.taskOwnChatOnly":

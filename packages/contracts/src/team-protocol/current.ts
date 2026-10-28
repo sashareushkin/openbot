@@ -16,11 +16,13 @@ import { AGENT_PUBLISH_CAPABILITY } from "./agent-publish-v1";
 import { AGENT_SESSION_SETTINGS_CAPABILITY } from "./agent-session-settings-v1";
 import { AGENT_TASK_LIMIT_CAPABILITY } from "./agent-task-limit-v1";
 import { AGENT_TASKS_CAPABILITY } from "./agent-tasks-v1";
+import { AGENT_THREADS_CAPABILITY } from "./agent-threads-v1";
 import { AGENT_UPDATE_CAPABILITY } from "./agent-update-v1";
 import { BITWARDEN_CONNECTOR_CAPABILITY } from "./bitwarden-connector-v1";
 import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "./browser-navigation-v1";
 import { BROWSER_PAGE_STATE_CAPABILITY } from "./browser-page-state-v1";
 import { BROWSER_PROFILES_CAPABILITY } from "./browser-profiles-v1";
+import { BROWSER_SECRET_VAULT_CAPABILITY } from "./browser-secret-vault-v1";
 import { BROWSER_SIGN_IN_CAPABILITY } from "./browser-sign-in-v1";
 import { BROWSER_USER_CONTROL_CAPABILITY } from "./browser-user-control-v1";
 import {
@@ -56,6 +58,7 @@ import { PROMPT_CACHE_TTL_CAPABILITY } from "./prompt-cache-ttl-v1";
 import { TEAM_PROMPT_MULTI_SELECT_CAPABILITY } from "./prompt-multi-select-v1";
 import { PROVIDER_ACCOUNT_RELAY_CAPABILITY } from "./provider-account-relay-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "./provider-accounts-v1";
+import { PROVIDER_DEFAULT_CAPABILITY } from "./provider-default-v1";
 import { PROVIDER_HOST_SIGN_IN_CAPABILITY } from "./provider-host-sign-in-v1";
 import { PROVIDER_USAGE_RESET_CAPABILITY } from "./provider-usage-reset-v1";
 import { PROVIDERS_ADMIN_CAPABILITY } from "./providers-v1";
@@ -80,6 +83,9 @@ import { STORAGE_DISK_CAPABILITY } from "./storage-disk-v1";
 import { TEAM_SUBAGENTS_CAPABILITY } from "./subagents-v1";
 import { TEAM_UI_BLOCKS_CAPABILITY } from "./ui-blocks-v1";
 import { TEAM_OPEN_PROVIDERS_CAPABILITY, TEAM_PROTOCOL_V8_CAPABILITIES } from "./v8";
+import { VAULT_IMPORT_CAPABILITY } from "./vault-import-v1";
+import { VAULT_CAPABILITY } from "./vault-v1";
+import { VAULT_V2_CAPABILITY } from "./vault-v2";
 import { WEBHOOK_TESTS_CAPABILITY } from "./webhook-tests-v1";
 import { WORKFLOWS_CAPABILITY } from "./workflows-v1";
 import { WORKSPACE_DIRECTORY_CAPABILITY } from "./workspace-directory-v1";
@@ -97,6 +103,7 @@ export const TEAM_AGENT_CREATE_MODEL_CAPABILITY = "agent-create-model";
 export const TEAM_MEDIA_ATTACHMENTS_CAPABILITY = "media-attachments";
 export const TEAM_EML_ATTACHMENTS_CAPABILITY = "eml-attachments";
 export const TEAM_ZIP_ATTACHMENTS_CAPABILITY = "zip-attachments";
+export const TEAM_MP4_ATTACHMENTS_CAPABILITY = "mp4-attachments";
 /**
  * Frozen optional member-leave-v1 contract: a bodyless `POST /v1/team/leave` answered with 204. The
  * caller, a member or an admin, removes their own membership with the same effects as an admin's
@@ -131,11 +138,13 @@ export {
   AGENT_SESSION_SETTINGS_CAPABILITY,
   AGENT_TASK_LIMIT_CAPABILITY,
   AGENT_TASKS_CAPABILITY,
+  AGENT_THREADS_CAPABILITY,
   AGENT_UPDATE_CAPABILITY,
   ANDROID_PUSH_NOTIFICATIONS_CAPABILITY,
   BITWARDEN_CONNECTOR_CAPABILITY,
   BROWSER_PAGE_STATE_CAPABILITY,
   BROWSER_PROFILES_CAPABILITY,
+  BROWSER_SECRET_VAULT_CAPABILITY,
   BROWSER_SIGN_IN_CAPABILITY,
   BROWSER_USER_CONTROL_CAPABILITY,
   CHANNEL_DELETE_CAPABILITY,
@@ -160,6 +169,7 @@ export {
   PROMPT_CACHE_TTL_CAPABILITY,
   PROVIDER_ACCOUNT_RELAY_CAPABILITY,
   PROVIDER_ACCOUNTS_CAPABILITY,
+  PROVIDER_DEFAULT_CAPABILITY,
   PROVIDER_HOST_SIGN_IN_CAPABILITY,
   PROVIDER_USAGE_RESET_CAPABILITY,
   PROVIDERS_ADMIN_CAPABILITY,
@@ -193,6 +203,9 @@ export {
   TEAM_PROMPT_MULTI_SELECT_CAPABILITY,
   TEAM_SUBAGENTS_CAPABILITY,
   TEAM_UI_BLOCKS_CAPABILITY,
+  VAULT_CAPABILITY,
+  VAULT_IMPORT_CAPABILITY,
+  VAULT_V2_CAPABILITY,
   WEBHOOK_TESTS_CAPABILITY,
   WORKFLOWS_CAPABILITY,
   WORKSPACE_DIRECTORY_CAPABILITY,
@@ -221,6 +234,7 @@ export const TEAM_CURRENT_CAPABILITIES = [
   TEAM_EML_ATTACHMENTS_CAPABILITY,
   TEAM_MEDIA_ATTACHMENTS_CAPABILITY,
   TEAM_ZIP_ATTACHMENTS_CAPABILITY,
+  TEAM_MP4_ATTACHMENTS_CAPABILITY,
   "channel-chats-v1",
   CHANNEL_DELETE_CAPABILITY,
   MCP_SERVERS_CAPABILITY,
@@ -295,8 +309,14 @@ export const TEAM_CURRENT_CAPABILITIES = [
   PROVIDER_ACCOUNT_RELAY_CAPABILITY,
   STORAGE_DISK_CAPABILITY,
   PROMPT_CACHE_TTL_CAPABILITY,
+  PROVIDER_DEFAULT_CAPABILITY,
   CLAUDE_API_KEY_CAPABILITY,
   WORKFLOWS_CAPABILITY,
+  AGENT_THREADS_CAPABILITY,
+  VAULT_CAPABILITY,
+  BROWSER_SECRET_VAULT_CAPABILITY,
+  VAULT_IMPORT_CAPABILITY,
+  VAULT_V2_CAPABILITY,
 ] as const;
 
 export type TeamCurrentCapability = (typeof TEAM_CURRENT_CAPABILITIES)[number];
@@ -412,8 +432,15 @@ export const TEAM_BOOTSTRAP_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.filter(
     capability !== PROVIDER_ACCOUNT_RELAY_CAPABILITY &&
     capability !== STORAGE_DISK_CAPABILITY &&
     capability !== PROMPT_CACHE_TTL_CAPABILITY &&
+    capability !== PROVIDER_DEFAULT_CAPABILITY &&
     capability !== CLAUDE_API_KEY_CAPABILITY &&
-    capability !== WORKFLOWS_CAPABILITY,
+    capability !== WORKFLOWS_CAPABILITY &&
+    capability !== AGENT_THREADS_CAPABILITY &&
+    capability !== TEAM_MP4_ATTACHMENTS_CAPABILITY &&
+    capability !== VAULT_CAPABILITY &&
+    capability !== BROWSER_SECRET_VAULT_CAPABILITY &&
+    capability !== VAULT_IMPORT_CAPABILITY &&
+    capability !== VAULT_V2_CAPABILITY,
 );
 // A v7 host does not know the v8 markers, so a client sends them only after it negotiates protocol 8.
 const TEAM_PROTOCOL_V7_CURRENT_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.filter(
@@ -472,7 +499,14 @@ export function legacyTeamCapabilities(capabilities: readonly string[]): string[
       capability !== PROVIDER_ACCOUNT_RELAY_CAPABILITY &&
       capability !== STORAGE_DISK_CAPABILITY &&
       capability !== PROMPT_CACHE_TTL_CAPABILITY &&
+      capability !== PROVIDER_DEFAULT_CAPABILITY &&
       capability !== CLAUDE_API_KEY_CAPABILITY &&
-      capability !== WORKFLOWS_CAPABILITY,
+      capability !== WORKFLOWS_CAPABILITY &&
+      capability !== AGENT_THREADS_CAPABILITY &&
+      capability !== TEAM_MP4_ATTACHMENTS_CAPABILITY &&
+      capability !== VAULT_CAPABILITY &&
+      capability !== BROWSER_SECRET_VAULT_CAPABILITY &&
+      capability !== VAULT_IMPORT_CAPABILITY &&
+      capability !== VAULT_V2_CAPABILITY,
   );
 }

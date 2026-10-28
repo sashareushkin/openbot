@@ -1,15 +1,18 @@
 import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
 import { supportedAttachmentExtensions } from "@openbot/contracts/attachment-files";
 import {
+  type AccountUsageLimit,
   type AgentWait,
   accountUsageCoversModel,
   canPreviewAttachment,
+  DEFAULT_PROVIDER_ACCOUNT_ID,
   type QueueSnapshot,
   usageQuotaForModel,
 } from "@openbot/contracts/ipc";
 import {
   TEAM_EML_ATTACHMENTS_CAPABILITY,
   TEAM_MEDIA_ATTACHMENTS_CAPABILITY,
+  TEAM_MP4_ATTACHMENTS_CAPABILITY,
   TEAM_ZIP_ATTACHMENTS_CAPABILITY,
 } from "@openbot/contracts/team-protocol/current";
 import { sourceText } from "@openbot/i18n/source";
@@ -124,6 +127,7 @@ export function ConversationComposer() {
     providerSilentMinutes,
     providerOffline,
     agentProviderName,
+    sideThreadOpen,
   } = useConversationViewScope();
   const { t, format, sourceText: localizeSourceText } = useText();
   const messageLabel = () =>
@@ -213,6 +217,10 @@ export function ConversationComposer() {
    * something asks the provider again. So the clock is part of the state, not only the percentage.
    */
   const [now, setNow] = createSignal(Date.now());
+  const agentAccountId = () => props.agent?.providerAccountId ?? DEFAULT_PROVIDER_ACCOUNT_ID;
+  /** A reading of another account of the same provider says nothing about the quota this agent uses. */
+  const agentUsageLimit = (limit: AccountUsageLimit) =>
+    limit.id === props.agent?.provider && (limit.accountId ?? DEFAULT_PROVIDER_ACCOUNT_ID) === agentAccountId();
   /**
    * The first plan window that is spent and has not ended yet. `usedPercent` is what the provider
    * reports, so it can pass 100 slightly. A spent plan does not say whether paid credits remain.
@@ -222,7 +230,7 @@ export function ConversationComposer() {
     // The usage of a provider that this build does not know has no notice.
     if (!provider || !isKnownAgentProvider(provider)) return null;
     for (const limit of props.accountUsage?.limits ?? []) {
-      if (limit.id !== provider) continue;
+      if (!agentUsageLimit(limit)) continue;
       // A provider that names quota groups limits each group apart: only the agent's model's group
       // can stop it, and a model that no group lists has no notice.
       const model = props.agent?.model;
@@ -243,11 +251,11 @@ export function ConversationComposer() {
     }
     return null;
   });
-  const usageNoticeAccount = () =>
-    JSON.stringify([
-      props.agent?.provider,
-      props.agentStatus.providers?.find((status) => status.id === props.agent?.provider)?.email,
-    ]);
+  const usageNoticeAccount = () => {
+    const status = props.agentStatus.providers?.find((provider) => provider.id === props.agent?.provider);
+    const email = status?.accounts?.find((account) => account.id === agentAccountId())?.email ?? status?.email;
+    return JSON.stringify([props.agent?.provider, agentAccountId(), email]);
+  };
   const usageNotice = () => {
     const spent = usageExhausted();
     return spent &&
@@ -264,7 +272,7 @@ export function ConversationComposer() {
       account: usageNoticeAccount(),
       spent: usageExhausted(),
       loaded: props.accountUsage?.limits.some(
-        (limit) => limit.id === props.agent?.provider && (limit.primary !== null || limit.secondary !== null),
+        (limit) => agentUsageLimit(limit) && (limit.primary !== null || limit.secondary !== null),
       ),
     }),
     ({ account, spent, loaded }) => {
@@ -293,6 +301,7 @@ export function ConversationComposer() {
       eml: local || capabilities.includes(TEAM_EML_ATTACHMENTS_CAPABILITY),
       media: local || capabilities.includes(TEAM_MEDIA_ATTACHMENTS_CAPABILITY),
       zip: local || capabilities.includes(TEAM_ZIP_ATTACHMENTS_CAPABILITY),
+      mp4: local || capabilities.includes(TEAM_MP4_ATTACHMENTS_CAPABILITY),
     })
       .map((extension) => `.${extension}`)
       .join(",");
@@ -361,7 +370,7 @@ export function ConversationComposer() {
   );
   function ComposerBody() {
     return (
-      <div class="composer-wrap">
+      <div class={["composer-wrap", { "conversation-covered": sideThreadOpen() }]} inert={sideThreadOpen()}>
         {channel ? <channel.AboveComposer /> : null}
         <Show when={speaking() && props.agent}>
           {(agent) => (
@@ -388,6 +397,8 @@ export function ConversationComposer() {
                   title={channel ? t("chat.awaiting.subtasks") : undefined}
                   onDismiss={dismissAwaitingReplies}
                   onOpenAgent={props.onSelectAgent}
+                  // A channel's rows are its sub-tasks, not queued replies.
+                  onSteer={props.activeTurnId && !channel ? props.onSteerQueuedMessage : undefined}
                 />
               </Show>
               <Show when={waitsVisible() && props.onCancelWait}>
@@ -419,7 +430,7 @@ export function ConversationComposer() {
                     editingDeliveryId={editingDeliveryId()}
                     canSteer={Boolean(props.activeTurnId)}
                     onSteer={props.onSteerQueuedMessage}
-                    onRunAsTask={props.tasks?.onRunQueuedMessage}
+                    onRunAsTask={props.threads?.onRunQueuedMessage}
                     onCancel={props.onCancelQueuedMessage}
                     onEdit={editQueuedMessage}
                     onReorder={reorderPresentedQueue}

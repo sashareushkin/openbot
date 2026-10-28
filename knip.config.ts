@@ -36,6 +36,8 @@ const config: KnipConfig = {
     "tasklist",
     // Tunnels Slack to the local Signal and account API in `bun run dev:slack`.
     "cloudflared",
+    // Copies a profile database read-only for the agent threads upgrade E2E script.
+    "sqlite3",
     // Speaks the English samples of the macOS dictation smoke test.
     "say",
     // Finds the child processes of the dev app in the channel E2E scripts.
@@ -44,6 +46,8 @@ const config: KnipConfig = {
     "screencapture",
     // Lists the browsers that macOS knows for the external link setting.
     "osascript",
+    // Makes the FIFO whose opens never finish in the exit watchdog E2E script.
+    "mkfifo",
   ],
   workspaces: {
     ".": {

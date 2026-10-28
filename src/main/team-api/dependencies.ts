@@ -30,12 +30,15 @@ import type { SkillMarketplaceService } from "../skill-marketplace-service";
 
 import type {
   AgentEvent,
+  AgentModelId,
+  AgentProviderId,
   CentralAuthUser,
   DirectMessageRealtimeEvent,
   DirectTypingRealtimeEvent,
   RoutineResultConnectionOption,
   RoutineResultDestination,
   RoutineResultRoutineInput,
+  SaveSetupInput,
   SetRoutineResultDestinationInput,
   SidebarLayoutSnapshot,
   TeamPresenceSnapshot,
@@ -67,6 +70,7 @@ import type { PushNotificationService } from "../push-notifications";
 import type { RemoteScreenGateway } from "../remote-screen-gateway";
 import type { SignInRelayHost } from "../sign-in-relay-host";
 import type { TeamStore } from "../team-store";
+import type { VaultService } from "../vault-service";
 
 type TeamApiAgentMethods = Pick<
   AgentService,
@@ -225,12 +229,21 @@ export type TeamApiHostedSites = Pick<HostedSiteDesktopService, "listServerSites
 export type TeamApiHiddenAgents = Pick<AgentService, "listHiddenAgents" | "setAgentHidden">;
 
 /**
- * Its presence is what `#protocolSupport` advertises `agent-tasks-v1` on. A member who can send a
- * message to the agent can use it. Moving a queued message into a task stays local.
+ * Its presence is what `#protocolSupport` advertises `agent-tasks-v1` and `agent-threads-v1` on. A member
+ * who can send a message to the agent can use it. Moving a queued message into a task stays local.
  */
 export type TeamApiAgentTasks = Pick<
   AgentService,
-  "listAgents" | "listTasks" | "readTask" | "startTask" | "sendMessage" | "stopTask" | "closeTask" | "reopenTask"
+  | "listAgents"
+  | "listTasks"
+  | "readTask"
+  | "startTask"
+  | "sendMessage"
+  | "stopTask"
+  | "closeTask"
+  | "reopenTask"
+  | "renameTask"
+  | "deleteTask"
 >;
 
 /**
@@ -285,6 +298,17 @@ export type TeamApiWorkflows = Pick<
 > &
   Pick<HostEventsService, "rotateWorkflowSecret">;
 
+/** The setup choice of this computer: the same file and the same service step as the local Settings save. */
+interface TeamApiDefaultProvider {
+  get(): Effect.Effect<ProviderDefaultSetting, { readonly cause: unknown }>;
+  set(input: SaveSetupInput): Effect.Effect<ProviderDefaultSetting, { readonly cause: unknown }>;
+}
+
+export interface ProviderDefaultSetting {
+  provider: AgentProviderId | null;
+  model: AgentModelId | null;
+}
+
 /**
  * The admin routes, one member per optional capability. A member's presence is what
  * `#protocolSupport` advertises its capability on; every route behind it requires an owner or admin.
@@ -332,6 +356,8 @@ export interface TeamApiAdmin {
   memoryLimit?: AgentMemoryLimitSetting;
   /** `prompt-cache-ttl-v1`: how long the provider keeps the prompt cache of this computer's agents. */
   promptCacheTtl?: Pick<PromptCacheTtlPreferenceStore, "get" | "set">;
+  /** `provider-default-v1`: the provider and model that a new agent of this computer starts on. */
+  defaultProvider?: TeamApiDefaultProvider;
   /** `routine-results-v1`: the place where an agent routine sends its answers. */
   routineResults?: TeamApiRoutineResults;
 }
@@ -361,7 +387,10 @@ interface TeamApiProviders {
     | "clearProviderCredential"
   >;
   credentials: Pick<ProviderCredentialStore, "status" | "set" | "clear">;
-  runtimes: Pick<ProviderRuntimeManager, "getStatus" | "download" | "cancel" | "checkForUpdates">;
+  runtimes: Pick<
+    ProviderRuntimeManager,
+    "getStatus" | "download" | "cancel" | "checkForUpdates" | "startKeyProviderCli"
+  >;
   customProviders: PeerCustomProviderChanges;
   /**
    * Whether this host can run the Claude pasted-code sign-in. `providers-v3` promises it, so a host
@@ -435,6 +464,9 @@ export type TeamApiOnePasswordConnector = Pick<
 /** `bitwarden-connector-v1`: the Bitwarden connection of this host, by an API key and the master password. */
 export type TeamApiBitwardenConnector = Pick<BitwardenConnectorService, "status" | "connectWithApiKey" | "disconnect">;
 
+/** `vault-v1`: the Vault of this host, for an owner or admin. The route uses no CSV import. */
+export type TeamApiVault = VaultService;
+
 export type TeamApiAgentAccess = Pick<AgentAccessStore, "copyAgent" | "get" | "levels" | "set" | "subscribe">;
 
 export interface TeamApiOptions {
@@ -447,6 +479,7 @@ export interface TeamApiOptions {
   connectors?: TeamApiConnectors | undefined;
   onePasswordConnector?: TeamApiOnePasswordConnector | undefined;
   bitwardenConnector?: TeamApiBitwardenConnector | undefined;
+  vault?: TeamApiVault | undefined;
   providerHostSignIns?: TeamApiProviderHostSignIns | undefined;
   providerAccounts?: TeamApiProviderAccounts | undefined;
   providerUsageResets?: TeamApiProviderUsageResets | undefined;

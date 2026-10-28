@@ -174,6 +174,7 @@ import { type CustomProviderChanges, createCustomProviderChanges } from "./custo
 import { CustomProviderStore } from "./custom-provider-store";
 import { MCP_OAUTH_REDIRECT_URL } from "./deep-link-router";
 import { desktopShowsAgentEvent } from "./desktop-notifications";
+import { shouldAutoStartHost } from "./development-profile";
 import {
   applyDevelopmentRemoteAccount,
   type DevelopmentRemoteRole,
@@ -282,7 +283,7 @@ import {
   configureAttachmentProtocol,
   configureServerLogoProtocols,
 } from "./session-configuration";
-import { readSetupState } from "./setup-store";
+import { readSetupState, writeSetupState } from "./setup-store";
 import { SignInRelayClient } from "./sign-in-relay-client";
 import { agentPrintedLink, SignInRelayHost } from "./sign-in-relay-host";
 import { SignalIngress } from "./signal-ingress";
@@ -400,6 +401,7 @@ const TEARDOWN_ORDER = {
   hostUpdateCoordinator: 12,
   requestedUpdate: 13,
   hostedServerStartRetry: 14,
+  launchPublishRetry: 14.5,
   hostedServerActivity: 15,
   serverMemory: 16,
   serverMode: 17,
@@ -1601,9 +1603,12 @@ export async function createApplicationServices({
   const providerTempDirectory = join(app.getPath("userData"), "provider-temp");
   performance.mark("openbot:services.computer-use");
   if (process.platform === "win32") await Effect.runPromise(sweepProviderTemp(providerTempDirectory));
-  // Outside every workspace. Each saved key is masked in the logs before the first agent starts.
-  const agentApiKeys = new AgentApiKeys(join(app.getPath("userData"), "agent-api-keys"));
+  // Outside every workspace. Each saved key is masked in the logs before the first agent starts. The
+  // Vault's keys are written only when an agent lists its keys; a file left from the last run that the
+  // Vault no longer holds is removed here.
+  const agentApiKeys = new AgentApiKeys(join(app.getPath("userData"), "agent-api-keys"), () => vault.items.apiKeys());
   await Effect.runPromise(agentApiKeys.registerSaved());
+  await Effect.runPromise(agentApiKeys.syncVault().pipe(Effect.ignore));
   // The schedule triggers of workflows share the routine timer; built after the workflows below.
   let workflowTriggers: WorkflowTriggers | null = null;
   const service: AgentService = new AgentService({
@@ -1635,11 +1640,10 @@ export async function createApplicationServices({
     offProviders: providerUse.off(),
     providerAccounts,
     saveProviderUse: (provider, on) =>
-      providerUse
-        .set(provider, on)
-        .pipe(
-          Effect.mapError((error) => new AgentLifecycleFailed({ operation: "saveProviderUse", cause: error.cause })),
-        ),
+      providerUse.set(provider, on).pipe(
+        Effect.tap(() => providerRuntimes.providerUseChanged()),
+        Effect.mapError((error) => new AgentLifecycleFailed({ operation: "saveProviderUse", cause: error.cause })),
+      ),
     preferredProvider: setupState.preferredProvider ?? "codex",
     bundledExecutables: providerRuntimes.bundledExecutables(),
     prepareAgentWorkspace: (agent) =>
@@ -1827,6 +1831,10 @@ export async function createApplicationServices({
     changed: (workflowId) => service.notifyWorkflowsChanged(workflowId),
   });
   service.armRoutines();
+  // An agent event too, so joined admins and the web app read the Vault again. It carries no item.
+  vault.onChanged(() => service.notifyVaultChanged());
+  // A changed or deleted Vault API key reaches the file that an agent reads at once.
+  vault.onChanged(() => void Effect.runPromise(agentApiKeys.syncVault().pipe(Effect.ignore)));
   teardown.push(TEARDOWN_ORDER.workflows, "the workflows", () => Effect.runPromise(workflowRuntime.close()));
   // An agent routine's answer sent on to a messaging place; see `routine-results.ts`.
   const routineResultRuntime = await Effect.runPromise(
@@ -2265,6 +2273,8 @@ export async function createApplicationServices({
     // Present, so the host advertises `bitwarden-connector-v1`. An owner or admin connects it with an
     // API key and the master password: a session key from their computer cannot open this vault.
     bitwardenConnector,
+    // Present, so the host advertises `vault-v1`. The routes are admin-only.
+    vault,
     // Present on Linux, so the host advertises `provider-host-sign-in-v1`. The routes are admin-only.
     providerHostSignIns,
     // Present, so the host advertises `provider-accounts-v1`. The routes are admin-only.
@@ -2323,6 +2333,29 @@ export async function createApplicationServices({
       timezone: serverTimezone,
       memoryLimit: agentMemoryLimitSetting,
       promptCacheTtl,
+      // The local Settings save does the same two steps (`saveSetup`).
+      defaultProvider: {
+        // The provider that a new agent starts on now, also before a setup choice: `preferredProvider` above.
+        get: () =>
+          readSetupState(setupFile).pipe(
+            Effect.map((state) => ({
+              provider: service.preferredProvider(),
+              model: state.preferredProvider === service.preferredProvider() ? state.preferredModel : null,
+            })),
+          ),
+        set: (input) =>
+          writeSetupState(setupFile, input).pipe(
+            Effect.tap(() => service.setPreferredProvider(input.preferredProvider, input.preferredModel)),
+            // The window read the setup once at start, so it gets the new choice.
+            Effect.tap((state) =>
+              Effect.sync(() => {
+                for (const window of BrowserWindow.getAllWindows())
+                  sendToRenderer(window, IPC_ENDPOINTS.app.setupState, state);
+              }),
+            ),
+            Effect.map((state) => ({ provider: state.preferredProvider, model: state.preferredModel })),
+          ),
+      },
       routineResults: routineResultRuntime,
     },
     // The host's Team API routes share the IPC handlers' runtime preparation: a first server
@@ -2922,6 +2955,30 @@ export async function createApplicationServices({
     hostedServerActivity.start();
     teardown.push(TEARDOWN_ORDER.hostedServerActivity, "the hosted server activity report", () =>
       Effect.runPromise(hostedServerActivity.stop()),
+    );
+  } else if (!serverModeEnvironment) {
+    // A server that was published at the last quit is published again at launch, once (`index.ts`).
+    // That start can fail when the network is not ready yet, such as at login after an update, and
+    // the server then stayed private until the user published it again. A published server that a
+    // Signal failure puts in the error phase later is published again in the same way.
+    const launchPublishRetry = new HostedServerStartRetry({
+      hostPhase: () => host.getStatus().phase,
+      startHost: () =>
+        Effect.gen(function* () {
+          // A server that the user stopped is not published again: Stop clears `enabledOnLaunch`.
+          if (!shouldAutoStartHost({ ...host.getStatus(), remoteRole: developmentRemoteRole })) return;
+          const auth = centralAuth.getState();
+          // Only a start with no answer from the account server; any other auth error is the user's.
+          if (auth.status === "error" && auth.issue.code === "auth_api_unavailable")
+            yield* centralAuth.retry().pipe(toRemoteWorkflowError);
+          if (centralAuth.getState().status !== "signed_in") return;
+          return yield* host.start();
+        }),
+      onError: (message, error) => logger.warn(message, toLogValue(error)),
+    });
+    launchPublishRetry.start();
+    teardown.push(TEARDOWN_ORDER.launchPublishRetry, "the launch publish retry", () =>
+      Effect.runPromise(launchPublishRetry.stop()),
     );
   }
   const serverMode = serverModeEnvironment

@@ -10,7 +10,6 @@ import {
   type UpdateAgentInput,
 } from "@openbot/contracts/ipc";
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { taskApproval } from "@openbot/team-client/agent-tasks";
 import { hasVisibleToasts } from "@openbot/ui";
 import {
   type BackupModelSource,
@@ -20,6 +19,7 @@ import {
 } from "@openbot/ui/features/conversation/BackupModels";
 import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
 import { sidebarAgentWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
+import { useText } from "@openbot/ui/text";
 import { createEffect, createMemo } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
@@ -31,6 +31,9 @@ import { useTurns } from "../../turns";
 import { turnsPort } from "../../turns-port";
 import { useAuth } from "../account/account-context";
 import { useAgentTasks } from "../agent-tasks/agent-tasks-context";
+import { useAgentThreads } from "../agent-threads/agent-threads-context";
+import { conversationThreads } from "../agent-threads/conversation-threads";
+import { attentionKey } from "../agents/agent-runtime-snapshot";
 import { agentThreadAttention } from "../agents/agent-thread-attention";
 import { useAgents } from "../agents/agents-context";
 import { agentsPort } from "../agents/agents-port";
@@ -53,7 +56,7 @@ import { useWindowPage } from "../window/window-page-context";
 import { Conversation } from "./Conversation";
 import { useConversation } from "./conversation-context";
 import { messagePromptRequestKey, promptRequestKey } from "./conversation-keys";
-import type { ConversationTasks } from "./conversation-types";
+import type { ConversationThreads } from "./conversation-types";
 
 /**
  * The transcript of the active Agent, with everything the composer needs to send
@@ -180,7 +183,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
 
   const activePrompt = createMemo(() => {
     const agent = activeAgent();
-    const event = agent ? pendingPrompts()[agent.id] : undefined;
+    const event = agent ? pendingPrompts()[attentionKey(agent.id, agent.threadId)] : undefined;
     return event?.type === "prompt" && event.threadId === agent?.threadId ? event : undefined;
   });
 
@@ -207,14 +210,6 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
   const activeApproval = createMemo(() => {
     const agent = activeAgent();
     return agent ? approvalOfThread(agent.id, agent.threadId) : undefined;
-  });
-
-  const activeBrowserTakeover = createMemo(() => {
-    const agent = activeAgent();
-    const event = agent ? pendingPrompts()[agent.id] : undefined;
-    return event?.type === "browser-takeover-requested" && event.request.threadId === agent?.threadId
-      ? event.request
-      : undefined;
   });
 
   /**
@@ -352,25 +347,34 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
   const usageLimited = (choice: AgentModelChoice) =>
     usageLimitedModels().some((limited) => sameAgentModelChoice(limited, choice));
 
+  const { t } = useText();
   const agentTasks = useAgentTasks();
-  /** The active agent's tasks. Only this computer keeps tasks. */
-  const conversationTasks = createMemo((): ConversationTasks | undefined => {
-    const agentId = activeAgent()?.id;
-    if (!agentId || activeServer()?.kind !== "local" || !agentTasks.available()) return undefined;
-    return {
-      snapshot: agentTasks.snapshot(agentId),
-      conversation: agentTasks.conversation,
-      onOpen: (taskId) => agentTasks.openTask(agentId, taskId),
-      onStart: (text) => agentTasks.startTask(agentId, text),
-      onRunQueuedMessage: (deliveryId) => void agentTasks.runQueuedMessageAsTask(agentId, deliveryId),
-      onSend: (taskId, text) => agentTasks.sendToTask(agentId, taskId, text),
-      onStop: (taskId) => agentTasks.stopTask(agentId, taskId),
-      onClose: (taskId) => agentTasks.closeTask(agentId, taskId),
-      onReopen: (taskId) => agentTasks.reopenTask(agentId, taskId),
-      approval: (task) => taskApproval(task, approvals()),
+  const agentThreads = useAgentThreads();
+  /** The active agent's threads. A host without side threads shows only the agent's own chat. */
+  const threads = createMemo((): ConversationThreads | undefined => {
+    const agent = activeAgent();
+    if (!agent || !agentTasks.available()) return undefined;
+    return conversationThreads({
+      agent: { id: agent.id, updatedAt: agent.updatedAt ?? agent.time },
+      tasks: agentTasks,
+      tabs: agentThreads,
+      approvals: approvals(),
+      newThreadTitle: t("conversation.threads.new"),
       onRespondApproval: (approval, decision) =>
         respondToApprovalRequest(approval.agentId, approval.requestId, decision),
-    };
+    });
+  });
+  /** The thread that the conversation shows: the open side thread, or the agent's own chat. */
+  const openThreadId = () => threads()?.open?.threadId;
+  const activeBrowserTakeover = createMemo(() => {
+    const agent = activeAgent();
+    // A new thread draft has no turn, so it has no takeover.
+    const open = threads()?.open;
+    const threadId = open === undefined ? agent?.threadId : open?.threadId;
+    const event = agent && threadId ? pendingPrompts()[attentionKey(agent.id, threadId)] : undefined;
+    return event?.type === "browser-takeover-requested" && event.request.threadId === threadId
+      ? event.request
+      : undefined;
   });
   /**
    * A usage limit holds the active agent's queued message on this computer. The chat asks where to
@@ -595,10 +599,10 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         agentMemoryLimit={generalSettings().agentMemoryLimit}
         onClearAgentContext={clearActiveAgentContext()}
         onCompactAgentContext={compactActiveAgentContext()}
-        onRespondToBrowserTakeover={respondToBrowserTakeover}
+        onRespondToBrowserTakeover={(decision) => respondToBrowserTakeover(decision, openThreadId())}
         onCancelQueuedMessage={cancelQueuedMessage}
         waits={activeWaits()}
-        tasks={conversationTasks()}
+        threads={threads()}
         onCancelWait={cancelWait}
         onSteerQueuedMessage={steerQueuedMessage}
         onUpdateQueuedMessage={updateQueuedMessage}

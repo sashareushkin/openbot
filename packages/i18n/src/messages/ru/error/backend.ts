@@ -192,6 +192,8 @@ export const messages = {
   "error.backend.mcpServerNameTaken": "Сервер MCP с именем {name} уже существует.",
   "error.backend.mcpServerNoAnswer": "Сервер не ответил за {seconds} с.",
   "error.backend.mcpSignInNotAccepted": "Сервер не принял этот вход.",
+  "error.backend.mcpSignInClientRefused":
+    "Сервер входа не принял OpenBot при завершении входа. Войдите снова: OpenBot заново зарегистрируется на сервере.",
   "error.backend.mcpCommandNotFound": "Команда не найдена: {command}",
   "error.backend.mcpRegistrationRefused":
     "Сервер входа пока не принимает OpenBot как приложение. Дело не в вашем аккаунте. Подключитесь другим способом, например через локальный сервер MCP.",
@@ -317,6 +319,15 @@ export const messages = {
   "error.backend.taskNotFound": "Эта задача недоступна.",
   "error.backend.taskClosed": "Эта задача закрыта. Откройте её снова, чтобы отправить сообщение.",
   "error.backend.taskStillRunning": "Эта задача ещё выполняется. Дождитесь её остановки, затем закройте её.",
+  "error.backend.threadNotFound": "Эта ветка недоступна.",
+  "error.backend.threadStillRunning": "Эта ветка ещё выполняется. Остановите её и повторите попытку.",
+  "error.backend.threadArchived": "Эта ветка в архиве. Восстановите её, чтобы отправить сообщение.",
+  "error.backend.threadTitleRequired": "Дайте ветке короткое название.",
+  "error.backend.threadOpenLimitReached":
+    "У этого агента открыто веток: {count}. Архивируйте ветку, затем начните или восстановите другую.",
+  "error.backend.threadRemoteUnsupported": "Ветки доступны только для агентов на этом компьютере.",
+  "error.backend.threadMoveRefused":
+    "В новой ветке можно запустить только сообщение, которое вы отправили одному этому агенту.",
   "error.backend.taskTitleRequired": "Дайте задаче короткое название.",
   "error.backend.taskToolInvalid": "Дайте задаче название не длиннее 120 символов и описание того, что нужно сделать.",
   "error.backend.taskOwnChatOnly":

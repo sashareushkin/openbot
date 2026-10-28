@@ -59,6 +59,9 @@ export const messages = {
   "error.provider.runtimesUnsupported":
     "Los entornos de ejecución de proveedores no están disponibles en esta plataforma.",
   "error.provider.closing": "OpenBot se está cerrando.",
+  "error.provider.removeWhileOn": "Desactiva el proveedor antes de quitar su descarga.",
+  "error.provider.removeWhileDownloading": "Espera a que termine la descarga y luego quítala.",
+  "error.provider.removeIncomplete": "Un programa usa archivos de esta CLI. Ciérralo y vuelve a intentarlo.",
   "error.provider.cliOverride": "Elimina la ruta de CLI definida explícitamente antes de actualizar en OpenBot.",
   "error.provider.runtimeUpdateIncomplete": "La actualización del entorno de ejecución no se completó.",
   "error.provider.downloadHttp": "La descarga del entorno de ejecución falló con HTTP {status}.",
@@ -103,6 +106,7 @@ export const messages = {
   "error.provider.headerNameTooLong": "El nombre de una cabecera es demasiado largo.",
   "error.provider.headerNameDuplicate": "Dos cabeceras tienen el mismo nombre.",
   "error.provider.headerValueInvalid": "Falta el valor de una cabecera o es demasiado largo.",
+  "error.provider.headerValueMissing": "Introduce un valor para la cabecera {name}.",
   "error.provider.apiKeyTooLong": "La clave de API es demasiado larga.",
   "error.provider.localOnly": "Los proveedores solo se pueden cambiar en el equipo que ejecuta los agentes.",
   "error.provider.keyRequired": "Se requiere una clave de proveedor.",
