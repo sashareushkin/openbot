@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createMockOpenBot } from "../src/preview/mock-openbot";
 import { OpenBotPlayground } from "../src/preview/OpenBotPlayground";
-import "./design-main-screen.css";
-import "./design-main-screen-behavior";
 import { MAIN_SCREEN_OPTIONS } from "./design-main-screen-data";
 
 const meta = {
@@ -18,7 +16,6 @@ const fallback = createMockOpenBot(MAIN_SCREEN_OPTIONS);
 
 export const Main: Story = {
   render: () => {
-    document.documentElement.dataset.visualVariant = "white";
     window.openbot = fallback.api;
     return <OpenBotPlayground options={MAIN_SCREEN_OPTIONS} />;
   },

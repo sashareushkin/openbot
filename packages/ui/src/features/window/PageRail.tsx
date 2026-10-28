@@ -203,6 +203,8 @@ export interface PageRailProps {
   onSettings: (button: HTMLElement) => void;
   /** A notice for the Settings button, such as an update, when no other place shows it. A dot marks it. */
   settingsNotice?: string | undefined;
+  /** Server switcher shown below the page menu. */
+  serverSwitcher?: JSX.Element | undefined;
   /** The Help menu, between Marketplace and Settings. */
   help: JSX.Element;
   /**
@@ -378,6 +380,7 @@ export function PageRail(props: PageRailProps) {
           )}
         </For>
         <RailMoreMenu pages={pages()} current={props.current} pinned={props.pinned} onPinChange={props.onPinChange} />
+        {props.serverSwitcher}
       </div>
       <div class="window-rail-group">
         {/* A status update builds new rows. The key keeps each ring, and its open hover card, mounted. */}

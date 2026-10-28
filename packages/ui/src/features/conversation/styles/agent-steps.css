@@ -13,36 +13,12 @@
   overflow-clip-margin: 0;
 }
 
-/* The entry ignores the pointer so the chat scrolls under it; its controls take it back. */
-.agent-activity-content .agent-steps-toggle,
-.agent-activity-steps {
-  pointer-events: auto;
-}
-
-.agent-activity-content .agent-steps-toggle {
-  flex: 0 0 auto;
-  color: var(--openbot-text-muted);
-}
-
-/* The open list is not a lit toggle, so the chevron has no fill. */
-.agent-activity-content .agent-steps-toggle[aria-expanded="true"]:not(:hover) {
-  background: transparent;
-}
-
-.agent-activity-steps {
-  padding: 0 0 var(--openbot-space-2) var(--openbot-space-6);
-}
-
 .agent-steps-chevron {
   width: var(--openbot-icon-xs);
   height: var(--openbot-icon-xs);
   flex: 0 0 auto;
   color: var(--openbot-text-muted);
   transition: rotate var(--openbot-duration-fast) var(--openbot-ease-out);
-}
-
-.agent-steps-toggle[aria-expanded="true"] .agent-steps-chevron {
-  rotate: 180deg;
 }
 
 /* The row's chevron points right, as the subagents header's does, and down when its list is open. */

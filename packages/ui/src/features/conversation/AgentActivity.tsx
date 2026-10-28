@@ -1,12 +1,10 @@
 import type { AppTextKey } from "@openbot/i18n";
 import type { JSX } from "@solidjs/web";
-import { createEffect, createMemo, createSignal, createUniqueId, Show } from "solid-js";
-import { Button } from "../../button";
+import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
-import { ChevronDown } from "../../icons";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";
-import { type AgentStep, AgentStepList } from "./AgentSteps";
+import type { AgentStep } from "./AgentSteps";
 
 /**
  * The English source of each label. A label is an identifier here: render it with
@@ -146,14 +144,6 @@ export function AgentActivityBody(props: {
   children: JSX.Element;
 }) {
   const { t } = useText();
-  const stepsId = createUniqueId();
-  const [stepsChoice, setStepsChoice] = createSignal<boolean>();
-  const hasSteps = () => (props.steps?.length ?? 0) > 0;
-  const stepsOpen = () => hasSteps() && (stepsChoice() ?? props.stepsOpenByDefault === true);
-  // A new turn starts with no steps, and with the setting again.
-  createEffect(hasSteps, (has) => {
-    if (!has) setStepsChoice(undefined);
-  });
   return (
     <div class="agent-activity-body">
       <section
@@ -161,26 +151,7 @@ export function AgentActivityBody(props: {
         aria-label={t("chat.activity.current")}
       >
         {props.children}
-        <Show when={hasSteps()}>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            class="agent-steps-toggle"
-            aria-expanded={stepsOpen() ? "true" : "false"}
-            aria-controls={stepsOpen() ? stepsId : undefined}
-            aria-label={stepsOpen() ? t("chat.steps.hide") : t("chat.steps.show")}
-            onClick={() => setStepsChoice(!stepsOpen())}
-          >
-            <ChevronDown class="agent-steps-chevron" aria-hidden="true" />
-          </Button>
-        </Show>
       </section>
-      <Show when={stepsOpen()}>
-        <div class="agent-activity-steps">
-          <AgentStepList id={stepsId} steps={props.steps ?? []} live={props.live} />
-        </div>
-      </Show>
     </div>
   );
 }

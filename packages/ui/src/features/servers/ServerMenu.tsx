@@ -46,6 +46,8 @@ export interface ServerMenuProps extends ServerActionCallbacks {
   addCreatesServer?: boolean | undefined;
   /** The compact sidebar hides the server name. The rail stays visible then. */
   compact?: boolean;
+  /** Show the icon in the page rail and open the menu beside it. */
+  rail?: boolean;
 }
 
 function isContextMenuKey(event: KeyboardEvent): boolean {
@@ -121,7 +123,12 @@ export function ServerMenu(props: ServerMenuProps) {
 
   return (
     <>
-      <DropdownMenu.Root open={menuOpen()} onOpenChange={setMenuOpen} placement="bottom-start" gutter={6}>
+      <DropdownMenu.Root
+        open={menuOpen()}
+        onOpenChange={setMenuOpen}
+        placement={props.rail ? "right-start" : "bottom-start"}
+        gutter={6}
+      >
         <DropdownMenu.Trigger
           ref={(element) => (trigger = element)}
           class={buttonVariants({

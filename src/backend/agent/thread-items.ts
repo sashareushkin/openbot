@@ -368,22 +368,16 @@ export function toolProgressText(item: ThreadItem, completed: boolean): string |
   if (descriptor.includes("capture_screen")) {
     return sourceText(completed ? "status.agent.screenCaptureReviewing" : "status.agent.screenCaptureProgress");
   }
-  if (/(search|browser|fetch|navigate|open_url|web)/u.test(descriptor)) {
-    return completed ? "Reviewing the sources and information I found…" : "Searching for current information…";
-  }
-  if (/(read|find|list|get|inspect|snapshot)/u.test(descriptor)) {
-    return completed ? "Reviewing the information I gathered…" : "Gathering the relevant information…";
-  }
-  if (/(test|check|lint|build|verify)/u.test(descriptor)) {
-    return completed ? "Reviewing the verification results…" : "Checking the work…";
-  }
-  if (/(write|edit|patch|create|update|delete|move|filechange)/u.test(descriptor)) {
-    return completed ? "Reviewing the changes I made…" : "Making the requested changes…";
-  }
-  if (/(agent|delegate|message|send)/u.test(descriptor)) {
-    return completed ? "Reviewing the other agent’s response…" : "Coordinating with another agent…";
-  }
-  return completed ? TOOL_RESULT_PROGRESS : "Working through the next tool-assisted step…";
+  if (completed) return "Thinking about the answer…";
+  if (/(browser|fetch|navigate|open_url|webfetch|snapshot)/u.test(descriptor)) return "Browsing a website…";
+  if (/(websearch|web_search|search_web|search.*web)/u.test(descriptor)) return "Searching the web…";
+  if (/(search|grep|glob|find)/u.test(descriptor)) return "Searching files…";
+  if (/(write|edit|patch|create|update|delete|move|filechange)/u.test(descriptor)) return "Editing files…";
+  if (/(read|list|get|inspect)/u.test(descriptor)) return "Reading files…";
+  if (/(test|check|lint|build|verify)/u.test(descriptor)) return "Checking the work…";
+  if (/(command|exec|shell|terminal|bash)/u.test(descriptor)) return "Running a command…";
+  if (/(agent|delegate|message|send)/u.test(descriptor)) return "Coordinating with agents…";
+  return "Working on it…";
 }
 
 /** The provider account after the first that an agent runs on, or null for the provider's own sign-in. */

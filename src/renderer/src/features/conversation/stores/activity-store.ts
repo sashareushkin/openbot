@@ -1,5 +1,4 @@
 import type { AgentModelId, AgentProviderRef, AgentReasoningEffort } from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
 import type { AgentProfile } from "@openbot/ui/data";
 import { type AgentActivityLabel, nextAgentActivityLabel } from "@openbot/ui/features/conversation/AgentActivity";
 import {
@@ -9,6 +8,7 @@ import {
 } from "@openbot/ui/features/conversation/activity-timing";
 import { currentText } from "@openbot/ui/text";
 import { createEffect, createMemo, createSignal, onCleanup, untrack } from "solid-js";
+import { activityDetailKey } from "../activity-detail";
 import { agentConversationKey } from "../conversation-keys";
 import type { ConversationProps } from "../conversation-types";
 
@@ -80,29 +80,8 @@ export function createActivityStore(deps: ActivityStoreDeps) {
     if (current?.agent?.id === agentId) return current.activityId;
     return `${agentId}:message:${streamingMessage.id}`;
   });
-  const latestActiveCommentary = createMemo(() => {
-    const activeTurnId = deps.props.activeTurnId;
-    if (!activeTurnId) return null;
-    const streamingMessage = streamingAgentMessage();
-    if (streamingMessage && streamingMessage.itemType !== "commentary") return null;
-    for (let index = deps.props.messages.length - 1; index >= 0; index -= 1) {
-      const message = deps.props.messages[index];
-      if (message?.turnId !== activeTurnId || message.itemType !== "commentary") continue;
-      const items = message.items ?? [message.body];
-      for (let itemIndex = items.length - 1; itemIndex >= 0; itemIndex -= 1) {
-        const detail = markdownPreviewText(items[itemIndex] ?? "");
-        if (detail) return detail;
-      }
-    }
-    return null;
-  });
   const activeActivityDetail = createMemo(() => {
-    const hold = heldByOwnChannelWork();
-    if (hold) return currentText().t("chat.activity.workingIn", { channel: hold.channelName });
-    const progress = deps.props.activityDetail?.trim();
-    // The agent's own commentary is shown as plain text, without its Markdown marks (#3425); the host's
-    // progress text is in the host's source English and is read here in the user's language.
-    return latestActiveCommentary() ?? (progress ? currentText().sourceText(progress) : null);
+    return currentText().t(activityDetailKey(deps.props.activityDetail));
   });
   const agentActivity = createMemo<"Working" | null>(() => (activeActivityId() ? "Working" : null));
   /**

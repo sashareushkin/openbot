@@ -1,4 +1,5 @@
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
+import { ServerMenu } from "@openbot/ui/features/servers/ServerMenu";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
 import { PageRail, type PageRailPage } from "@openbot/ui/features/window/PageRail";
 import { useText } from "@openbot/ui/text";
@@ -7,6 +8,7 @@ import { useLayout } from "../../layout";
 import { usePlatform } from "../../platform";
 import { useChannels } from "../channels/channels-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
+import { useServerActions } from "../servers/server-actions";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
 import { useUpdates } from "../updates/updates-context";
@@ -28,6 +30,7 @@ export function WorkspacePageRail(props: { hidden: boolean }) {
   const channels = useChannels();
   const whatsNew = useWhatsNew();
   const { activeServer } = useServers();
+  const serverActions = useServerActions();
   const platform = usePlatform();
   /** macOS draws the window buttons in the top row of the rail. Windows and Linux show the logo there. */
   const logo = () => {
@@ -74,6 +77,19 @@ export function WorkspacePageRail(props: { hidden: boolean }) {
       onSettings={(button) => (updateNotice() ? openAppSettings(button, "updates") : windowPage.openSettings(button))}
       settingsNotice={updateNotice()}
       logo={logo()}
+      serverSwitcher={
+        <ServerMenu
+          rail
+          serverName={activeServer()?.name ?? text.t("sidebar.topbar.localServer")}
+          servers={serverActions.orderedServers()}
+          view={layout.serverView()}
+          onViewChange={layout.setServerView}
+          onSelect={serverActions.select}
+          onAdd={serverActions.add}
+          addCreatesServer={serverActions.addCreatesServer()}
+          {...serverActions.callbacks}
+        />
+      }
       help={
         <RailHelpMenu
           version={whatsNew.state.version}

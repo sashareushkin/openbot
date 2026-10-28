@@ -49,7 +49,7 @@ import { ReplyQuote } from "@openbot/ui/features/conversation/ReplyQuote";
 import { SpeakingBar } from "@openbot/ui/features/conversation/SpeakingBar";
 import { VoiceRecordingMorph, voiceButtonLabel } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
 import { useText } from "@openbot/ui/text";
-import { createEffect, createMemo, createSignal, createStore, For, Loading, lazy, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, createStore, For, Loading, lazy, onSettled, Show } from "solid-js";
 import { reportErrorBanner, reportNotification } from "../../error-reports";
 import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
 import { speechReading } from "../speech/speech-playback";
@@ -136,6 +136,66 @@ export function ConversationComposer() {
       : props.agent?.name
         ? t("composer.placeholder.message", { name: props.agent.name })
         : t("composer.placeholder.messageAgent");
+  let composerElement: HTMLDivElement | undefined;
+  let measureWrappedDraft = () => {};
+  onSettled(() => {
+    const composer = composerElement;
+    if (!composer) return;
+    const measure = document.createElement("div");
+    Object.assign(measure.style, {
+      position: "fixed",
+      visibility: "hidden",
+      top: "0",
+      left: "0",
+      whiteSpace: "pre-wrap",
+      overflowWrap: "break-word",
+      wordBreak: "break-word",
+      boxSizing: "border-box",
+    });
+    document.body.append(measure);
+    let frame = 0;
+    const sync = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const editor = composer.querySelector<HTMLElement>(".composer-editor-surface");
+        if (!editor) return;
+        const style = getComputedStyle(editor);
+        const outer = getComputedStyle(composer);
+        const button = composer.querySelector<HTMLElement>(".composer-toolbar > .composer-button");
+        const actions = composer.querySelector<HTMLElement>(".composer-primary-actions");
+        const width =
+          composer.clientWidth -
+          parseFloat(outer.paddingLeft) -
+          parseFloat(outer.paddingRight) -
+          (button?.offsetWidth ?? 28) -
+          (actions?.offsetWidth ?? 28) -
+          16;
+        measure.style.width = `${Math.max(1, width)}px`;
+        measure.style.font = style.font;
+        measure.style.lineHeight = style.lineHeight;
+        const text = editor.innerText || "";
+        measure.textContent = text;
+        composer.toggleAttribute(
+          "data-design-wrapped",
+          !text.includes("\n") && measure.scrollHeight > (parseFloat(style.lineHeight) || 20) + 1,
+        );
+      });
+    };
+    measureWrappedDraft = sync;
+    const observer = new ResizeObserver(sync);
+    observer.observe(composer);
+    sync();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      measure.remove();
+      measureWrappedDraft = () => {};
+    };
+  });
+  createEffect(
+    () => currentDraft().text,
+    () => measureWrappedDraft(),
+  );
   const [pickerOpen, setPickerOpen] = createSignal(false);
   const [skillPickerRequest, setSkillPickerRequest] = createSignal(0);
   let skillPickerChosen = false;
@@ -601,6 +661,8 @@ export function ConversationComposer() {
         </div>
         <div
           class="composer"
+          ref={composerElement}
+          onInput={() => measureWrappedDraft()}
           data-compact={
             currentDraft().text.includes("\n") || unreferencedDraftAttachments().length > 0 ? undefined : ""
           }

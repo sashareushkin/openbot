@@ -1,6 +1,16 @@
 import { defineMessages } from "../../message";
 
 export const messages = defineMessages("chat", {
+  "chat.activity.readingFiles": "Reading files…",
+  "chat.activity.editingFiles": "Editing files…",
+  "chat.activity.browsing": "Browsing a website…",
+  "chat.activity.searchingWeb": "Searching the web…",
+  "chat.activity.searchingFiles": "Searching files…",
+  "chat.activity.checkingWork": "Checking the work…",
+  "chat.activity.runningCommand": "Running a command…",
+  "chat.activity.coordinating": "Coordinating with agents…",
+  "chat.activity.workingMemory": "Working with memory…",
+  "chat.activity.thinkingAnswer": "Thinking about the answer…",
   "chat.activity.workingOnIt": "Working on it…",
   "chat.activity.thinking": "Thinking it through…",
   "chat.activity.connectingDots": "Connecting the dots…",

@@ -84,6 +84,7 @@ import {
   ServerPanelLoadNotice,
   serverWorkspacePhase,
 } from "@openbot/ui/features/servers/ServerConnectionNotice";
+import { ServerMenu } from "@openbot/ui/features/servers/ServerMenu";
 import { ServerRail } from "@openbot/ui/features/servers/ServerRail";
 import type { SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
 import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
@@ -1617,6 +1618,19 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
             }}
             onMarketplace={workspace.state.status === "online" ? openMarketplace : undefined}
             onSettings={openAccountSettings}
+            serverSwitcher={
+              <ServerMenu
+                rail
+                serverName={workspace.state.host?.name ?? "OpenBot"}
+                servers={servers()}
+                view={layout.serverView()}
+                onViewChange={layout.setServerView}
+                onSelect={selectServer}
+                onAdd={() => hostedServers.openAddServer("server_rail")}
+                addCreatesServer={hostedServers.available()}
+                {...serverActionCallbacks}
+              />
+            }
             help={
               <RailHelpMenu
                 version={null}

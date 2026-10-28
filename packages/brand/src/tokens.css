@@ -435,3 +435,46 @@
 [data-provider="acp"] {
   --openbot-provider-current: var(--openbot-text-primary);
 }
+
+/* Tokens for the personal desktop design. */
+:root {
+  --fork-color-1: #388af0;
+  --fork-color-2: #f8f7f5;
+  --fork-color-3: #eeedea;
+  --fork-color-4: #f4f3f1;
+  --fork-color-5: #f0efec;
+  --fork-color-6: #e8e7e4;
+  --fork-color-7: #ffffff;
+  --fork-color-8: rgba(55, 53, 49, 0.09);
+  --fork-color-9: rgba(55, 53, 49, 0.17);
+  --fork-color-10: #292927;
+  --fork-color-11: #4b4a47;
+  --fork-color-12: #716f6b;
+  --fork-color-13: rgba(55, 53, 49, 0.07);
+  --fork-color-14: rgba(55, 53, 49, 0.08);
+  --fork-color-15: rgba(55, 53, 49, 0.025);
+  --fork-color-16: rgba(55, 53, 49, 0.13);
+  --fork-color-17: rgba(55, 53, 49, 0.04);
+  --fork-color-18: #3b93f0;
+  --fork-color-19: #cbc9c4;
+  --fork-color-20: #706f6b;
+  --fork-color-21: rgba(55, 53, 49, 0.12);
+  --fork-color-22: #fafafa;
+  --fork-color-23: #f1f2f3;
+  --fork-color-24: #f7f7f8;
+  --fork-color-25: #f0f1f2;
+  --fork-color-26: #e8e9eb;
+  --fork-color-27: #202124;
+  --fork-color-28: #484a50;
+  --fork-color-29: #70737a;
+  --fork-color-30: rgba(38, 42, 50, 0.09);
+  --fork-color-31: rgba(38, 42, 50, 0.16);
+  --fork-color-32: #eceef0;
+  --fork-color-33: #eaecef;
+  --fork-color-34: #ebedef;
+  --fork-message-font-size: 16px;
+  --fork-radius-search: 9px;
+  --fork-radius-composer: 16px;
+  --fork-radius-circle: 50%;
+  --fork-radius-pill: 999px;
+}

@@ -82,7 +82,7 @@ export function selectionActionsPosition(
   const topTop = firstLine.top - TOOLBAR_GAP - toolbar.height;
   const bottomFits = bottomTop + toolbar.height <= viewport.height - VIEWPORT_MARGIN;
   const topFits = topTop >= VIEWPORT_MARGIN;
-  const placement = bottomFits || !topFits ? "bottom" : "top";
+  const placement = topFits || !bottomFits ? "top" : "bottom";
   const idealTop = placement === "bottom" ? bottomTop : topTop;
   const maximumTop = Math.max(VIEWPORT_MARGIN, viewport.height - toolbar.height - VIEWPORT_MARGIN);
   return { top: clamp(idealTop, VIEWPORT_MARGIN, maximumTop), left, placement };

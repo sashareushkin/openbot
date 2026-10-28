@@ -1,0 +1,261 @@
+*,
+*::before,
+*::after {
+  cursor: default !important;
+}
+
+a[href],
+a[href] *,
+a[href]::before,
+a[href]::after {
+  cursor: pointer !important;
+}
+
+.sidebar-agent-item .agent-row:hover:not(.agent-row-active),
+.sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row:hover:not(.agent-row-active) {
+  background: transparent;
+}
+
+.sidebar-agent-item .agent-row.agent-row-active:hover,
+.sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row.agent-row-active:hover {
+  background: var(--openbot-bg-surface);
+}
+
+.provider-model-trigger .ui-swap {
+  width: auto !important;
+}
+.provider-model-trigger .ui-swap-leaving {
+  display: none;
+}
+.provider-model-trigger-mark[data-entering] {
+  animation: none;
+}
+
+.composer[data-compact][data-design-wrapped] {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 96px;
+  align-items: stretch;
+  gap: 4px;
+  padding: 10px;
+}
+.composer[data-compact][data-design-wrapped] .composer-input-label {
+  grid-column: 1;
+  min-height: 48px;
+}
+.composer[data-compact][data-design-wrapped] .composer-toolbar {
+  display: flex;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-root,
+.composer[data-compact][data-design-wrapped] .composer-editor-surface {
+  min-height: 48px;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-surface {
+  padding: 2px 4px 8px;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-placeholder {
+  top: 2px;
+  left: 4px;
+}
+
+.message-entry-user .ui-bubble > .ui-bubble-content,
+.composer .voice-button:not(.voice-button-active) {
+  background: color-mix(in srgb, var(--design-agent-color, var(--fork-color-1)) 22%, var(--openbot-bg-surface));
+  color: var(--openbot-text-primary);
+}
+.composer .voice-button:not(.voice-button-active):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--design-agent-color, var(--fork-color-1)) 30%, var(--openbot-bg-surface));
+  color: var(--openbot-text-primary);
+}
+
+@font-face {
+  font-family: "Alegreya Sans";
+  src: url("../assets/alegreya-sans/AlegreyaSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alegreya Sans";
+  src: url("../assets/alegreya-sans/AlegreyaSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alegreya Sans";
+  src: url("../assets/alegreya-sans/AlegreyaSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+.conversation-panel {
+  --conversation-column-width: 720px;
+}
+.message-entry .message-copy {
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: var(--fork-message-font-size);
+  line-height: 1.35;
+}
+
+.selection-actions-bar {
+  width: max-content !important;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+.selection-actions-presets:not(.selection-actions-presets-hidden),
+.selection-actions-presets-expanded .selection-actions-more-presets {
+  max-width: none !important;
+}
+.selection-actions-layer[data-ready="true"] {
+  transform: translateY(var(--design-selection-shift, 0px));
+}
+
+:root[data-openbot-color-scheme="light"] {
+  --openbot-bg-canvas: var(--fork-color-2);
+  --openbot-bg-frame: var(--fork-color-3);
+  --openbot-bg-sidebar: var(--fork-color-4);
+  --openbot-bg-native-sidebar: var(--fork-color-4);
+  --openbot-bg-control: var(--fork-color-5);
+  --openbot-bg-control-hover: var(--fork-color-6);
+  --openbot-bg-surface: var(--fork-color-7);
+  --openbot-bg-surface-raised: var(--fork-color-7);
+  --openbot-border: var(--fork-color-8);
+  --openbot-border-strong: var(--fork-color-9);
+  --openbot-text-primary: var(--fork-color-10);
+  --openbot-text-secondary: var(--fork-color-11);
+  --openbot-text-muted: var(--fork-color-12);
+  --openbot-text-placeholder: var(--fork-color-12);
+  --openbot-hover: var(--fork-color-13);
+}
+
+:root[data-openbot-color-scheme="light"] .sidebar-search-trigger {
+  border: 1px solid var(--fork-color-14);
+  border-radius: var(--fork-radius-search);
+  background: var(--fork-color-3);
+}
+
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active:hover {
+  background: var(--fork-color-7);
+}
+
+:root[data-openbot-color-scheme="light"] .message-entry-agent .ui-bubble-variant-default > .ui-bubble-content {
+  border-color: var(--fork-color-14);
+  background: var(--fork-color-7);
+  color: var(--fork-color-10);
+  box-shadow: 0 1px 2px var(--fork-color-15);
+}
+
+:root[data-openbot-color-scheme="light"] .composer {
+  border: 1px solid var(--fork-color-16);
+  border-radius: var(--fork-radius-composer);
+  background: var(--fork-color-7);
+  box-shadow: 0 3px 12px var(--fork-color-17);
+}
+
+:root[data-openbot-color-scheme="light"] .composer:focus-within {
+  border-color: color-mix(in srgb, var(--design-agent-color, var(--fork-color-18)) 35%, var(--fork-color-19));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--design-agent-color, var(--fork-color-18)) 9%, transparent);
+}
+
+:root[data-openbot-color-scheme="light"] .composer-button,
+:root[data-openbot-color-scheme="light"] .dictation-button {
+  background: var(--fork-color-5);
+  color: var(--fork-color-20);
+}
+
+:root[data-openbot-color-scheme="light"] .selection-actions-bar {
+  border-color: var(--fork-color-16);
+  box-shadow: 0 8px 24px var(--fork-color-21);
+}
+
+.sidebar-topbar > .sidebar-server-name,
+.sidebar-history-button,
+.conversation-header .provider-model-picker {
+  display: none;
+}
+.window-rail-group > .sidebar-server-name {
+  display: flex;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  justify-content: center;
+  padding: 0;
+  border-radius: var(--fork-radius-circle);
+}
+.window-rail-group
+  > .sidebar-server-name
+  :is(.sidebar-server-name-label, .sidebar-server-name-chevron, .sidebar-server-name-sleep) {
+  display: none;
+}
+
+:root[data-openbot-color-scheme="light"] .sidebar-search-wrap > .sidebar-search-trigger {
+  width: 100%;
+  border: 1px solid var(--fork-color-14);
+  border-radius: var(--fork-radius-pill);
+  background: var(--fork-color-3);
+}
+.conversation-heading-group > :not(.conversation-title) {
+  display: none;
+}
+.conversation-heading-group .conversation-title {
+  padding-inline: 8px;
+}
+
+.conversation-header-actions {
+  margin-left: auto;
+}
+.conversation-header .conversation-model-pending {
+  display: none;
+}
+
+.app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle {
+  margin-left: 0;
+}
+.app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle::before {
+  content: none;
+}
+
+.agent-steps {
+  display: none;
+}
+
+.message-entry .message-action-row {
+  display: none;
+}
+
+.sidebar-topbar-actions {
+  margin-left: auto;
+}
+
+:root[data-openbot-color-scheme="light"] {
+  --openbot-bg-canvas: var(--fork-color-22);
+  --openbot-bg-frame: var(--fork-color-23);
+  --openbot-bg-sidebar: var(--fork-color-24);
+  --openbot-bg-native-sidebar: var(--fork-color-24);
+  --openbot-bg-control: var(--fork-color-25);
+  --openbot-bg-control-hover: var(--fork-color-26);
+  --openbot-text-primary: var(--fork-color-27);
+  --openbot-text-secondary: var(--fork-color-28);
+  --openbot-text-muted: var(--fork-color-29);
+  --openbot-text-placeholder: var(--fork-color-29);
+  --openbot-border: var(--fork-color-30);
+  --openbot-border-strong: var(--fork-color-31);
+}
+:root[data-openbot-color-scheme="light"] .sidebar-search-trigger {
+  background: var(--fork-color-32);
+}
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-agent-item .agent-row-active:hover,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active,
+:root[data-openbot-color-scheme="light"] .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row-active:hover {
+  background: var(--fork-color-33);
+}
+:root[data-openbot-color-scheme="light"] .message-entry-agent .ui-bubble-variant-muted > .ui-bubble-content {
+  background: var(--fork-color-7);
+  border-color: var(--fork-color-34);
+}
+
+:root[data-openbot-color-scheme="light"] .composer-button,
+:root[data-openbot-color-scheme="light"] .dictation-button {
+  background: var(--openbot-bg-control);
+}

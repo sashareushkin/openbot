@@ -1,3 +1,4 @@
+import { avatarHeadColor } from "@openbot/ui/bloub-avatar";
 import { MessageSelectionActions } from "@openbot/ui/features/conversation/SelectionActions";
 import { useText } from "@openbot/ui/text";
 import { createEffect, Show } from "solid-js";
@@ -67,7 +68,7 @@ export function ConversationView(props: ConversationProps) {
             "side-panel-maximized": sidePanelOpen() && sidePanel().maximized,
           },
         ]}
-        style={`--settings-panel-width: ${settingsPanelWidth()}px; --browser-panel-width: ${browserPanelWidth()}px; --side-panel-width: ${settingsOpen() ? settingsPanelWidth() : browserPanelWidth()}px`}
+        style={`--design-agent-color: ${props.agent ? avatarHeadColor(props.agent.avatarSeed, props.agent.avatarHue) : "#388af0"}; --settings-panel-width: ${settingsPanelWidth()}px; --browser-panel-width: ${browserPanelWidth()}px; --side-panel-width: ${settingsOpen() ? settingsPanelWidth() : browserPanelWidth()}px`}
         onDragEnter={(event) => {
           if (!props.globalOverlayOpen && event.dataTransfer?.types.includes("Files")) setDropActive(true);
         }}

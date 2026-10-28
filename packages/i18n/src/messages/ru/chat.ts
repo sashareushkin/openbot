@@ -2,6 +2,16 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.activity.readingFiles": "Читаю файлы…",
+  "chat.activity.editingFiles": "Редактирую файлы…",
+  "chat.activity.browsing": "Смотрю сайт…",
+  "chat.activity.searchingWeb": "Ищу в интернете…",
+  "chat.activity.searchingFiles": "Ищу в файлах…",
+  "chat.activity.checkingWork": "Проверяю работу…",
+  "chat.activity.runningCommand": "Выполняю команду…",
+  "chat.activity.coordinating": "Общаюсь с агентами…",
+  "chat.activity.workingMemory": "Работаю с памятью…",
+  "chat.activity.thinkingAnswer": "Обдумываю ответ…",
   "chat.activity.workingOnIt": "Работаю над этим…",
   "chat.activity.thinking": "Обдумываю…",
   "chat.activity.connectingDots": "Свожу всё воедино…",

@@ -174,9 +174,9 @@ export function AgentThreadView(props: AgentThreadViewProps) {
             )}
           </For>
           <Show when={running()}>
-            {(task) => (
+            {(_task) => (
               <div class="virtual-chat-row">
-                <AgentActivityIndicator agent={props.agent} label={activityLabel} detail={task().progress} />
+                <AgentActivityIndicator agent={props.agent} label={activityLabel} />
               </div>
             )}
           </Show>
