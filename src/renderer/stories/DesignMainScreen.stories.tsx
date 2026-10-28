@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createMockOpenBot } from "../src/preview/mock-openbot";
 import { OpenBotPlayground } from "../src/preview/OpenBotPlayground";
 import "./design-main-screen.css";
+import "./design-main-screen-behavior";
 import { MAIN_SCREEN_OPTIONS } from "./design-main-screen-data";
 
 const meta = {

@@ -6,7 +6,7 @@ import { requireFixture, STORY_AGENT_SUMMARIES, STORY_APP_INFO, STORY_SERVERS } 
 const first = requireFixture(STORY_AGENT_SUMMARIES[0], "Main screen agent");
 const second = requireFixture(STORY_AGENT_SUMMARIES[1], "Second screen agent");
 const third = requireFixture(STORY_AGENT_SUMMARIES[2], "Third screen agent");
-const agents: ClientAgentSummary[] = [
+export const MAIN_SCREEN_AGENTS: ClientAgentSummary[] = [
   { ...first, name: "Альфред", title: "", avatarHue: 215, preview: "Подготовил сводку на сегодня." },
   { ...second, name: "Марк", title: "Помощник", avatarHue: 30, preview: "Продолжаю работу над задачей." },
   { ...third, name: "Кира", title: "Дизайнер", avatarHue: 30, preview: "Собрала варианты интерфейса." },
@@ -55,8 +55,10 @@ const conversation: ConversationSnapshot = {
 };
 
 export const MAIN_SCREEN_OPTIONS: MockOpenBotOptions = {
-  agents,
-  snapshots: { [first.id]: conversation },
+  agents: MAIN_SCREEN_AGENTS,
+  snapshots: Object.fromEntries(
+    MAIN_SCREEN_AGENTS.map((agent) => [agent.id, { ...conversation, agentId: agent.id, threadId: agent.threadId }]),
+  ),
   tasks: {},
   queues: {},
   storyForeignAgent: false,

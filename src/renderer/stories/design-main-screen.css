@@ -25,3 +25,52 @@ a[href]::after {
 .sidebar-pinned-item[data-pinned-key^="agent:"] .agent-row.agent-row-active:hover {
   background: var(--openbot-bg-surface);
 }
+
+/* The prototype replaces only the model label and icon motion, not menu motion. */
+.provider-model-trigger .ui-swap {
+  width: auto !important;
+}
+.provider-model-trigger .ui-swap-leaving {
+  display: none;
+}
+.provider-model-trigger-mark[data-entering] {
+  animation: none;
+}
+
+/* Wrapped text gets the same layout as a draft containing a line break. */
+.composer[data-compact][data-design-wrapped] {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 96px;
+  align-items: stretch;
+  gap: 4px;
+  padding: 10px;
+}
+.composer[data-compact][data-design-wrapped] .composer-input-label {
+  grid-column: 1;
+  min-height: 48px;
+}
+.composer[data-compact][data-design-wrapped] .composer-toolbar {
+  display: flex;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-root,
+.composer[data-compact][data-design-wrapped] .composer-editor-surface {
+  min-height: 48px;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-surface {
+  padding: 2px 4px 8px;
+}
+.composer[data-compact][data-design-wrapped] .composer-editor-placeholder {
+  top: 2px;
+  left: 4px;
+}
+
+/* A soft version of the active agent's actual avatar color. */
+.message-entry-user .ui-bubble,
+.composer .voice-button:not(.voice-button-active) {
+  background: color-mix(in srgb, var(--design-agent-color, #388af0) 22%, var(--openbot-bg-surface));
+  color: var(--openbot-text-primary);
+}
+.composer .voice-button:not(.voice-button-active):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--design-agent-color, #388af0) 30%, var(--openbot-bg-surface));
+  color: var(--openbot-text-primary);
+}
