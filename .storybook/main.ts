@@ -14,6 +14,7 @@ const config = {
     "../apps/status/src/**/*.stories.@(ts|tsx)",
   ],
   addons: ["@storybook/addon-a11y"],
+  staticDirs: [{ from: "../tools/interface-studio", to: "/studio" }],
   // The story iframe has no icon of its own. Without this link, Chrome requests /favicon.ico when
   // the iframe opens as a page, and the console shows a 404.
   previewHead: (head) => `${head}\n<link rel="icon" type="image/svg+xml" href="./favicon.svg" />`,
