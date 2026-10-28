@@ -229,3 +229,13 @@ a[href]::after {
 .app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle::before {
   content: none;
 }
+
+/* Message actions remain available through the context menu. */
+.message-entry .message-action-row {
+  display: none;
+}
+
+/* The create control stays at the trailing edge after moving the server menu to the rail. */
+.sidebar-topbar-actions {
+  margin-left: auto;
+}
