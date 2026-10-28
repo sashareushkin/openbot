@@ -65,7 +65,7 @@ a[href]::after {
 }
 
 /* A soft version of the active agent's actual avatar color. */
-.message-entry-user .ui-bubble,
+.message-entry-user .ui-bubble > .ui-bubble-content,
 .composer .voice-button:not(.voice-button-active) {
   background: color-mix(in srgb, var(--design-agent-color, #388af0) 22%, var(--openbot-bg-surface));
   color: var(--openbot-text-primary);
