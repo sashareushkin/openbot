@@ -21,10 +21,10 @@ const screens = [
 const content = document.querySelector("#content");
 let currentScreen;
 const visualVariants = [
-  { id: "white", name: "Чистый", description: "Белый фон и мягкие поверхности" },
+  { id: "white", name: "Чистый", description: "Почти белый фон и мягкие поверхности" },
   { id: "soft", name: "Мягкий", description: "Нейтральный серый и белые сообщения" },
   { id: "outline", name: "Свободный", description: "Белый фон и открытые ответы" },
-  { id: "current", name: "Текущий", description: "Предыдущий тёплый вариант" },
+  { id: "current", name: "Текущий", description: "Тёплый вариант с более заметным выбором" },
 ];
 let activeVariant = "white";
 function applyVariant(frame) {
