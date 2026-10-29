@@ -6,6 +6,12 @@ All notable changes to OpenBot will be documented here. The project follows
 
 ## [Unreleased]
 
+## [0.52.3] - 2026-10-29
+
+### Changed
+
+- Show the group arrow next to its name on hover, without a click animation.
+
 ## [0.52.2] - 2026-10-29
 
 ### Changed
