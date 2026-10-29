@@ -27,10 +27,10 @@ bun run prepare:remote-desktop-runtime
 bun run verify:remote-desktop-runtime
 bun run prepare:cua-driver
 bun run build
-bunx electron-builder --dir --mac --config.mac.identity=null --config.mac.notarize=false "--config.directories.output=$output"
+bunx electron-builder --dir --mac --config electron-builder.fork.yml --config.mac.identity=null --config.mac.notarize=false "--config.directories.output=$output"
 arch=$(uname -m)
 case "$arch" in arm64) app="$output/mac-arm64/OpenBot.app" ;; x86_64) app="$output/mac/OpenBot.app" ;; *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; esac
-bun scripts/verify-macos-package.ts "$app"
+bun scripts/verify-macos-package.ts "$app" app.openbot.personal
 if [[ "$(git rev-parse HEAD)" != "$revision" ]] || [[ -n "$(git status --porcelain)" ]]; then
   echo 'Source changed during the build. No release tag was created.' >&2; exit 1
 fi
