@@ -264,11 +264,28 @@ a[href]::after {
   background: var(--openbot-bg-control);
 }
 
-/* Group headers stay quiet on hover; keyboard focus remains visible. */
+/* Group headers show only the disclosure arrow on hover. */
+.sidebar-section-toggle {
+  justify-content: flex-start;
+  gap: 6px;
+  transition: none;
+  animation: none;
+}
 .sidebar-section-toggle:hover:not(:focus-visible) {
   background: transparent !important;
   color: var(--openbot-text-readable);
 }
 .sidebar-section-toggle:hover:not(:focus-visible) .sidebar-section-chevron {
+  opacity: 1;
+}
+.agent-list[data-sidebar-dragging] .sidebar-section-toggle:hover:not(:focus-visible) .sidebar-section-chevron {
   opacity: 0;
+}
+.sidebar-section-toggle:active {
+  scale: 1;
+}
+.sidebar-section-chevron,
+.sidebar-section-collapse {
+  transition: none;
+  animation: none;
 }

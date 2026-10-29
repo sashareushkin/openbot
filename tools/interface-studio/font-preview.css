@@ -47,23 +47,3 @@
   font-weight: var(--studio-reading-weight);
   line-height: 1.5;
 }
-
-/* Studio proposal: show the disclosure arrow next to the group name. */
-.sidebar-section-toggle {
-  justify-content: flex-start;
-  gap: 6px;
-  transition: none !important;
-  animation: none !important;
-}
-.sidebar-section-toggle:hover:not(:focus-visible) .sidebar-section-chevron,
-.sidebar-section-toggle:focus-visible .sidebar-section-chevron {
-  opacity: 1;
-}
-.sidebar-section-toggle:active {
-  scale: 1;
-}
-.sidebar-section-chevron,
-.sidebar-section-collapse {
-  transition: none !important;
-  animation: none !important;
-}
