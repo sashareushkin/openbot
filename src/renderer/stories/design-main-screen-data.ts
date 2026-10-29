@@ -89,6 +89,15 @@ const conversation: ConversationSnapshot = {
 
 export const MAIN_SCREEN_OPTIONS: MockOpenBotOptions = {
   agents: MAIN_SCREEN_AGENTS,
+  sidebarLayout: {
+    revision: 1,
+    sections: [{ id: "11111111-1111-4111-8111-111111111111", name: "Personal" }],
+    order: ["people", "11111111-1111-4111-8111-111111111111", "unassigned"],
+    agentAssignments: Object.fromEntries(
+      MAIN_SCREEN_AGENTS.map((agent) => [agent.id, "11111111-1111-4111-8111-111111111111"]),
+    ),
+    agentOrder: MAIN_SCREEN_AGENTS.map((agent) => agent.id),
+  },
   snapshots: Object.fromEntries(
     MAIN_SCREEN_AGENTS.map((agent) => [agent.id, { ...conversation, agentId: agent.id, threadId: agent.threadId }]),
   ),
