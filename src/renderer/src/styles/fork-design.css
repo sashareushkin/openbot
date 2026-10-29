@@ -68,19 +68,22 @@ a[href]::after {
 }
 
 @font-face {
-  font-family: "Nunito Fork";
-  src: url("../assets/nunito/Nunito-Variable.ttf") format("truetype");
-  font-weight: 200 1000;
+  font-family: "Ysabeau Office Fork";
+  src: url("../assets/ysabeau-office/YsabeauOffice-Variable.ttf") format("truetype");
+  font-weight: 100 900;
   font-display: swap;
 }
 :root {
-  --openbot-font-sans: "Nunito Fork", sans-serif;
+  --openbot-font-sans: "Ysabeau Office Fork", sans-serif;
 }
 :root :is(*, *::before, *::after) {
   font-family: var(--openbot-font-sans) !important;
 }
 .conversation-panel {
   --conversation-column-width: 720px;
+}
+.message-entry-user .ui-bubble {
+  max-width: 76%;
 }
 .message-entry .message-copy,
 [data-slot="bubble"][data-author="user"] .message-copy {
