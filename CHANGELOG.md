@@ -6,6 +6,12 @@ All notable changes to OpenBot will be documented here. The project follows
 
 ## [Unreleased]
 
+## [0.52.5] - 2026-10-29
+
+### Changed
+
+- Use the macOS system font in the personal app.
+
 ## [0.52.4] - 2026-10-29
 
 ### Changed
