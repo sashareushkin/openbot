@@ -11,16 +11,43 @@ revision=$(git rev-parse HEAD)
 short_revision=$(git rev-parse --short=12 HEAD)
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 tag="personal-macos-${stamp}-${short_revision}"
-root="$PWD/dist/personal-macos"
-mkdir -p "$root"
-output="$root/$tag"
-if [[ -e "$output" ]] || git rev-parse --verify --quiet "refs/tags/$tag" >/dev/null; then
-  echo 'Build identifier already exists. Try again.' >&2; exit 1
-fi
-mkdir "$output"
+# This personal fork keeps builds in one directory, regardless of the source worktree.
+root="/Users/sashareushkin/projects/openbot/sync-v0.52.1/dist"
+[[ -d "$root" && ! -L "$root" ]] || { echo 'The personal build directory is unavailable.' >&2; exit 1; }
+lock="$root/.personal-build.lock"
+mkdir "$lock" || { echo 'Another personal build is running, or its lock needs review.' >&2; exit 1; }
+output=""
 complete=0
-cleanup_failed() { if [[ $complete -eq 0 ]]; then rm -rf -- "$output"; fi; }
-trap cleanup_failed EXIT
+cleanup() {
+  if [[ $complete -eq 0 && -n "$output" ]]; then rm -rf -- "$output"; fi
+  rm -f -- "$lock/removals"
+  rmdir "$lock"
+}
+trap cleanup EXIT
+# Compare numeric version components, not lexicographic directory names.
+major=0 minor=0 patch=-1
+shopt -s nullglob
+for build in "$root"/fork-v*; do
+  [[ -d "$build" && ! -L "$build" ]] || continue
+  name=${build##*/}
+  if [[ "$name" =~ ^fork-v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    a=$((10#${BASH_REMATCH[1]})) b=$((10#${BASH_REMATCH[2]})) c=$((10#${BASH_REMATCH[3]}))
+    if (( a > major || (a == major && b > minor) || (a == major && b == minor && c > patch) )); then
+      major=$a minor=$b patch=$c
+    fi
+  fi
+done
+if (( patch < 0 )); then
+  echo 'No numbered fork build found in the primary dist directory.' >&2; exit 1
+fi
+next_patch=$((patch + 1))
+candidate="$root/fork-v${major}.${minor}.${next_patch}"
+if git rev-parse --verify --quiet "refs/tags/$tag" >/dev/null; then
+  echo 'Build tag already exists. Try again.' >&2; exit 1
+fi
+# mkdir is atomic: a concurrent build cannot take the same number.
+mkdir "$candidate" || { echo 'Build directory already exists. Try again.' >&2; exit 1; }
+output="$candidate"
 
 bun run voice:prepare-runtime
 bun run prepare:remote-desktop-runtime
@@ -35,21 +62,31 @@ if [[ "$(git rev-parse HEAD)" != "$revision" ]] || [[ -n "$(git status --porcela
   echo 'Source changed during the build. No release tag was created.' >&2; exit 1
 fi
 git tag -a "$tag" "$revision" -m "Personal macOS build $tag"
-printf 'revision=%s\nbranch=%s\ntag=%s\n' "$revision" "$branch" "$tag" > "$output/BUILD-INFO"
+printf 'revision=%s\nbranch=%s\ntag=%s\nbuild=%s\n' "$revision" "$branch" "$tag" "${output##*/}" > "$output/BUILD-INFO"
 complete=1
-trap - EXIT
 
-# Only directories created by this script and marked as complete are eligible for removal.
-# Preserve a running copy even if that temporarily leaves more than two builds.
-count=0
+# Retain the new build and the two previous numbered builds. Never remove a running app.
+# Only actual build directories qualify; unrelated directories are not touched.
+bun -e '
+const fs = require("node:fs"); const path = require("node:path");
+const root = process.argv[1];
+const builds = fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+  const match = /^fork-v(\d+)\.(\d+)\.(\d+)$/.exec(entry.name);
+  if (!entry.isDirectory() || !match) return [];
+  const dir = path.join(root, entry.name);
+  if (!fs.existsSync(path.join(dir, "mac-arm64/OpenBot.app")) && !fs.existsSync(path.join(dir, "mac/OpenBot.app"))) return [];
+  return [{ dir, version: match.slice(1).map(Number) }];
+});
+builds.sort((a, b) => b.version[0] - a.version[0] || b.version[1] - a.version[1] || b.version[2] - a.version[2]);
+for (const build of builds.slice(3)) console.log(build.dir);
+' "$root" > "$lock/removals"
 while IFS= read -r build; do
-  [[ -f "$build/BUILD-INFO" ]] || continue
-  count=$((count + 1))
-  [[ $count -le 2 ]] && continue
+  [[ -n "$build" ]] || continue
   if ps -axo command= | grep -F -- "$build/" | grep -v -F 'grep -F' >/dev/null; then
     echo "Keeping a running build: $build" >&2
     continue
   fi
   rm -rf -- "$build"
-done < <(find "$root" -mindepth 1 -maxdepth 1 -type d -name 'personal-macos-*' -print | LC_ALL=C sort -r)
+done < "$lock/removals"
+
 printf 'Verified app: %s\nTag: %s\n' "$app" "$tag"
