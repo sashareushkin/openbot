@@ -28,6 +28,11 @@
   --studio-reading-size: 16px;
   --studio-reading-weight: 450;
 }
+:root[data-font-preview="system"] {
+  --studio-font: -apple-system, BlinkMacSystemFont, system-ui;
+  --studio-reading-size: 16px;
+  --studio-reading-weight: 450;
+}
 :root[data-font-preview="nunito"] {
   --studio-font: "Studio Nunito";
   --studio-reading-size: 16px;
@@ -56,4 +61,8 @@
   font-size: var(--studio-reading-size) !important;
   font-weight: var(--studio-reading-weight);
   line-height: 1.5;
+}
+
+.message-entry-user .ui-bubble {
+  max-width: 76%;
 }

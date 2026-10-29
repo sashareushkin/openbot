@@ -25,6 +25,7 @@ let currentScreen;
 let activeFont = "ysabeau-office";
 const fontChoices = [
   { id: "ysabeau-office", name: "Ysabeau Office" },
+  { id: "system", name: "Системный" },
   { id: "nunito", name: "Nunito" },
   { id: "rubik", name: "Rubik" },
   { id: "manrope", name: "Manrope" },

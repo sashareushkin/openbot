@@ -29,4 +29,4 @@ The bundled Alegreya Sans fonts are distributed under the SIL Open Font License;
 
 The studio and its embedded Storybook run locally. The previews use sample data and are not the live desktop application. The main-screen preview uses the real app and a local mock bridge. Its sample content and window controls differ from a live macOS window.
 
-The main screen has a font comparison for Ysabeau Office, Nunito, Rubik, Manrope and Comfortaa. The options use local variable font files in `fonts/compare/`; each family includes its SIL Open Font License. These choices are preview-only and do not change the packaged application. The long sample message in `src/renderer/stories/design-main-screen-data.ts` is fictional.
+The main screen has a font comparison for the system font, Ysabeau Office, Nunito, Rubik, Manrope and Comfortaa. The bundled options use local variable font files in `fonts/compare/`; each family includes its SIL Open Font License. These choices are preview-only and do not change the packaged application. The sample messages in `src/renderer/stories/design-main-screen-data.ts` are fictional.
