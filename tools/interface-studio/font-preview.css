@@ -1,0 +1,49 @@
+@font-face {
+  font-family: "Studio Nunito";
+  src: url("./fonts/compare/nunito.ttf");
+  font-weight: 200 1000;
+}
+@font-face {
+  font-family: "Studio Rubik";
+  src: url("./fonts/compare/rubik.ttf");
+  font-weight: 300 900;
+}
+@font-face {
+  font-family: "Studio Manrope";
+  src: url("./fonts/compare/manrope.ttf");
+  font-weight: 200 800;
+}
+@font-face {
+  font-family: "Studio Comfortaa";
+  src: url("./fonts/compare/comfortaa.ttf");
+  font-weight: 300 700;
+}
+:root[data-font-preview="nunito"] {
+  --studio-font: "Studio Nunito";
+  --studio-reading-size: 17px;
+  --studio-reading-weight: 450;
+}
+:root[data-font-preview="rubik"] {
+  --studio-font: "Studio Rubik";
+  --studio-reading-size: 16px;
+  --studio-reading-weight: 400;
+}
+:root[data-font-preview="manrope"] {
+  --studio-font: "Studio Manrope";
+  --studio-reading-size: 16px;
+  --studio-reading-weight: 450;
+}
+:root[data-font-preview="comfortaa"] {
+  --studio-font: "Studio Comfortaa";
+  --studio-reading-size: 16px;
+  --studio-reading-weight: 400;
+}
+:root[data-font-preview]:not([data-font-preview="current"]) :is(*, *::before, *::after) {
+  font-family: var(--studio-font), sans-serif !important;
+}
+:root[data-font-preview]:not([data-font-preview="current"])
+  :is(.message-copy, .composer-editor-surface, .composer-editor-placeholder) {
+  font-size: var(--studio-reading-size) !important;
+  font-weight: var(--studio-reading-weight);
+  line-height: 1.5;
+}

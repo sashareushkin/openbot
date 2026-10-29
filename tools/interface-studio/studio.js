@@ -22,9 +22,27 @@ const screens = [
 ];
 const content = document.querySelector("#content");
 let currentScreen;
+let activeFont = "nunito";
+const fontChoices = [
+  { id: "nunito", name: "Nunito" },
+  { id: "rubik", name: "Rubik" },
+  { id: "manrope", name: "Manrope" },
+  { id: "comfortaa", name: "Comfortaa" },
+  { id: "current", name: "Текущий" },
+];
 function applyVariant(frame) {
   if (frame.contentDocument?.documentElement) {
     frame.contentDocument.documentElement.dataset.visualVariant = "white";
+    if (frame.dataset.screen === "design-main-screen--main") {
+      frame.contentDocument.documentElement.dataset.fontPreview = activeFont;
+      if (!frame.contentDocument.querySelector("#studio-font-preview")) {
+        const link = frame.contentDocument.createElement("link");
+        link.id = "studio-font-preview";
+        link.rel = "stylesheet";
+        link.href = "/studio/font-preview.css";
+        frame.contentDocument.head.append(link);
+      }
+    }
   }
 }
 
@@ -117,8 +135,22 @@ function renderMap() {
   wireFrames();
 }
 function renderScreen() {
-  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div></div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
+  const choices =
+    currentScreen.id === "design-main-screen--main"
+      ? `<div class="font-picker" role="group" aria-label="Шрифт"><span>Шрифт</span>${fontChoices.map((font) => `<button type="button" data-font="${font.id}" aria-pressed="${font.id === activeFont}">${font.name}</button>`).join("")}</div>`
+      : "";
+  content.innerHTML = `<div class="viewer"><div class="editor-main"><div class="editor-title"><div><button class="back" id="back">← Карта экранов</button><h1>${currentScreen.name}</h1><p>${currentScreen.group} / ${currentScreen.detail}</p></div>${choices}</div><div class="frame-wrap"><iframe title="${currentScreen.name}" data-screen="${currentScreen.id}" data-url="${frameURL(currentScreen)}"></iframe></div></div></div>`;
   content.querySelector("#back").onclick = () => navigate("map");
+  content.querySelectorAll("[data-font]").forEach(
+    (button) =>
+      void button.addEventListener("click", () => {
+        activeFont = button.dataset.font;
+        content
+          .querySelectorAll("[data-font]")
+          .forEach((item) => void item.setAttribute("aria-pressed", String(item.dataset.font === activeFont)));
+        content.querySelectorAll("iframe[data-screen]").forEach(applyVariant);
+      }),
+  );
   wireFrames();
 }
 async function renderPrinciples() {

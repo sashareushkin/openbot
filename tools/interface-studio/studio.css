@@ -477,3 +477,30 @@ button.primary {
   margin-top: 30px;
   color: #8b919b;
 }
+
+.font-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #e2e4e8;
+  border-radius: 12px;
+  background: white;
+}
+.font-picker span {
+  padding: 0 8px;
+  color: #81858d;
+  font-size: 11px;
+}
+.font-picker button {
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: transparent;
+  color: #666a72;
+}
+.font-picker button[aria-pressed="true"] {
+  background: #eceef1;
+  color: #202226;
+  font-weight: 600;
+}
