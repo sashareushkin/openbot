@@ -6,6 +6,13 @@ All notable changes to OpenBot will be documented here. The project follows
 
 ## [Unreleased]
 
+## [0.52.4] - 2026-10-29
+
+### Changed
+
+- The personal macOS build has a separate app identity, uses Ysabeau Office, and limits user message bubbles to 76% of the chat width.
+- **macOS may ask for notification and Keychain access again** after the app identity changes.
+
 ## [0.52.3] - 2026-10-29
 
 ### Changed
