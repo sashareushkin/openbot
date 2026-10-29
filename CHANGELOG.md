@@ -6,6 +6,17 @@ All notable changes to OpenBot will be documented here. The project follows
 
 ## [Unreleased]
 
+## [0.52.2] - 2026-10-29
+
+### Changed
+
+- The personal macOS fork uses its own profile and a clean chat design with Nunito.
+- Agent activity uses short descriptions, and the fork does not install upstream app updates.
+
+### Fixed
+
+- Group headers no longer change appearance when the pointer moves over them.
+
 ## [0.52.1] - 2026-10-27
 
 ### Added

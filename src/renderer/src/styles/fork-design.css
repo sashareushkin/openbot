@@ -263,3 +263,12 @@ a[href]::after {
 :root[data-openbot-color-scheme="light"] .dictation-button {
   background: var(--openbot-bg-control);
 }
+
+/* Group headers stay quiet on hover; keyboard focus remains visible. */
+.sidebar-section-toggle:hover:not(:focus-visible) {
+  background: transparent !important;
+  color: var(--openbot-text-readable);
+}
+.sidebar-section-toggle:hover:not(:focus-visible) .sidebar-section-chevron {
+  opacity: 0;
+}
