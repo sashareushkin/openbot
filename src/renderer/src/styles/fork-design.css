@@ -68,34 +68,34 @@ a[href]::after {
 }
 
 @font-face {
-  font-family: "Alegreya Sans";
-  src: url("../assets/alegreya-sans/AlegreyaSans-Regular.ttf") format("truetype");
-  font-weight: 400;
+  font-family: "Nunito Fork";
+  src: url("../assets/nunito/Nunito-Variable.ttf") format("truetype");
+  font-weight: 200 1000;
   font-display: swap;
 }
-@font-face {
-  font-family: "Alegreya Sans";
-  src: url("../assets/alegreya-sans/AlegreyaSans-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-display: swap;
+:root {
+  --openbot-font-sans: "Nunito Fork", sans-serif;
 }
-@font-face {
-  font-family: "Alegreya Sans";
-  src: url("../assets/alegreya-sans/AlegreyaSans-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-display: swap;
+:root :is(*, *::before, *::after) {
+  font-family: var(--openbot-font-sans) !important;
 }
 .conversation-panel {
   --conversation-column-width: 720px;
 }
 .message-entry .message-copy,
-[data-slot="bubble"][data-author="user"] .message-copy,
-.composer .composer-editor-surface,
-.composer .composer-editor-placeholder {
-  font-family: "Alegreya Sans", sans-serif;
+[data-slot="bubble"][data-author="user"] .message-copy {
+  font-family: var(--openbot-font-sans);
   font-size: var(--fork-message-font-size);
   font-weight: 450;
-  line-height: 1.35;
+  line-height: 1.5;
+}
+
+.composer .composer-editor-surface,
+.composer .composer-editor-placeholder {
+  font-family: var(--openbot-font-sans);
+  font-size: var(--fork-composer-font-size);
+  font-weight: 450;
+  line-height: 1.5;
 }
 
 .selection-actions-bar {

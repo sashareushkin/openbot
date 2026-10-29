@@ -20,7 +20,7 @@
 }
 :root[data-font-preview="nunito"] {
   --studio-font: "Studio Nunito";
-  --studio-reading-size: 17px;
+  --studio-reading-size: 16px;
   --studio-reading-weight: 450;
 }
 :root[data-font-preview="rubik"] {
