@@ -828,6 +828,7 @@ export const IPC_ENDPOINTS = {
     getPreference: request<undefined, DynamicIslandPreference>()("dynamic-island:get-preference"),
     setPreference: request<SetDynamicIslandPreferenceInput, DynamicIslandPreference>()("dynamic-island:set-preference"),
     publishPresentation: request<DynamicIslandPresentation, void>()("dynamic-island:publish-presentation"),
+    setDockBadge: request<number, void>()("dynamic-island:set-dock-badge"),
     getPresentation: request<undefined, DynamicIslandPresentation>()("dynamic-island:get-presentation"),
     presentation: event<DynamicIslandPresentation>()("dynamic-island:presentation"),
     preference: event<DynamicIslandPreference>()("dynamic-island:preference"),

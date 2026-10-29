@@ -1073,6 +1073,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       publishPresentation: async (presentation) => {
         dynamicIslandPresentation = clone(presentation);
       },
+      setDockBadge: async () => undefined,
       getPresentation: async () => clone(dynamicIslandPresentation),
       getBuiltInDisplayGeometry: async () => ({ width: 192, height: 32 }),
       onPreference: () => () => undefined,

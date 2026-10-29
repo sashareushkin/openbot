@@ -1,10 +1,11 @@
 // The always-on-top island window: its preference, its presentation, and the actions and
 // haptics it sends back.
 
-import type { IpcMainInvokeEvent } from "electron";
+import { app, type IpcMainInvokeEvent } from "electron";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { type DynamicIslandWindowController, requireDynamicIslandSender } from "../dynamic-island-window";
 import {
+  parseDockBadgeCount,
   parseDynamicIslandAction,
   parseDynamicIslandInteractive,
   parseDynamicIslandPreference,
@@ -40,6 +41,9 @@ export function dynamicIslandIpcHandlers({
       publishPresentation: authorizedHandler(fromMainRenderer, parseDynamicIslandPresentation, (_event, presentation) =>
         dynamicIsland.publish(presentation),
       ),
+      setDockBadge: authorizedHandler(fromMainRenderer, parseDockBadgeCount, (_event, count) => {
+        if (process.platform === "darwin") app.dock?.setBadge(count > 0 ? String(count) : "");
+      }),
       getBuiltInDisplayGeometry: eventHandler((event) => {
         fromMainRenderer(event);
         return dynamicIsland.builtInDisplayGeometry;

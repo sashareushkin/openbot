@@ -9,8 +9,10 @@ import { usePlatform } from "../../platform";
 import { useTurns } from "../../turns";
 import { attentionByAgent, attentionEventKey, attentionOfAgent } from "../agents/agent-runtime-snapshot";
 import { useAgents } from "../agents/agents-context";
+import { useChannels } from "../channels/channels-context";
 import { useConversation } from "../conversation/conversation-context";
 import { promptRequestKey } from "../conversation/conversation-keys";
+import { useDirectMessages } from "../conversation/direct-messages-context";
 import { useServerScope } from "../servers/server-scope";
 import { useServerSelection } from "../servers/server-selection";
 import { useServerSwitch } from "../servers/server-switch";
@@ -50,6 +52,8 @@ export function DynamicIslandBridge() {
     setFailedTurns,
   } = useTurns();
   const { unreadReplies, conversations } = useConversation();
+  const channels = useChannels();
+  const { directThreads } = useDirectMessages();
   const { selectAgent, openAgentMessage } = useNavigation();
   /** The handoff this bridge published, so it never consumes or clears its own. */
   let publishedAction: DynamicIslandAction | null = null;
@@ -83,6 +87,26 @@ export function DynamicIslandBridge() {
       // when it reads them again.
       untrack(() => dynamicIslandCoordinator.replaceServer(input));
       publishDynamicIslandPresentation();
+    },
+  );
+
+  // The badge follows the read state of the active workspace.
+  createEffect(
+    () => {
+      if (platform.landingPreview || platform.chatWindow || !loaded()) return null;
+      const agents = Object.values(unreadReplies()).reduce((sum, count) => sum + count, 0);
+      const channelCount = channels.state.channels.reduce(
+        (sum, channel) => sum + (channel.archived ? 0 : channel.unreadCount),
+        0,
+      );
+      const direct = directThreads().reduce((sum, thread) => sum + thread.unreadCount, 0);
+      return Math.min(999999, agents + channelCount + direct);
+    },
+    (count) => {
+      if (count !== null)
+        void dynamicIslandPort()
+          .dynamicIsland.setDockBadge(count)
+          .catch(() => undefined);
     },
   );
 

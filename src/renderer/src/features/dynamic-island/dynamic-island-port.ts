@@ -17,6 +17,7 @@ export interface DynamicIslandPort {
     | "performAction"
     | "performHaptic"
     | "publishPresentation"
+    | "setDockBadge"
     | "setInteractive"
   >;
 }

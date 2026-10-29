@@ -221,6 +221,13 @@ export function parseDynamicIslandPreference(input: unknown): DynamicIslandPrefe
   return input;
 }
 
+export function parseDockBadgeCount(input: unknown): number {
+  if (!isNumber(input) || !Number.isSafeInteger(input) || input < 0 || input > 999999) {
+    throw new Error("Dock badge count is invalid.");
+  }
+  return input;
+}
+
 export function parseDynamicIslandInteractive(input: unknown): SetDynamicIslandInteractiveInput {
   if (!isDynamicIslandInteractive(input)) {
     throw new Error("Dynamic Island interaction state is required.");

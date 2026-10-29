@@ -670,6 +670,7 @@ const openbotApi: OpenBotDesktopApi = {
     getPreference: decodeDynamicIslandPreference,
     setPreference: decodeDynamicIslandPreference,
     publishPresentation: decodeVoid,
+    setDockBadge: decodeVoid,
     getPresentation: decodeDynamicIslandPresentation,
     preference: decodeDynamicIslandPreference,
     presentation: decodeDynamicIslandPresentation,
