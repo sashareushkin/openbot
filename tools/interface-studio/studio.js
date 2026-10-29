@@ -22,7 +22,7 @@ const screens = [
 ];
 const content = document.querySelector("#content");
 let currentScreen;
-let activeFont = "ysabeau-office";
+let activeFont = "system";
 const fontChoices = [
   { id: "ysabeau-office", name: "Ysabeau Office" },
   { id: "system", name: "Системный" },

@@ -67,14 +67,8 @@ a[href]::after {
   color: var(--openbot-text-primary);
 }
 
-@font-face {
-  font-family: "Ysabeau Office Fork";
-  src: url("../assets/ysabeau-office/YsabeauOffice-Variable.ttf") format("truetype");
-  font-weight: 100 900;
-  font-display: swap;
-}
 :root {
-  --openbot-font-sans: "Ysabeau Office Fork", sans-serif;
+  --openbot-font-sans: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 :root :is(*, *::before, *::after) {
   font-family: var(--openbot-font-sans) !important;
