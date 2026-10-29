@@ -22,8 +22,9 @@ const screens = [
 ];
 const content = document.querySelector("#content");
 let currentScreen;
-let activeFont = "nunito";
+let activeFont = "ysabeau-office";
 const fontChoices = [
+  { id: "ysabeau-office", name: "Ysabeau Office" },
   { id: "nunito", name: "Nunito" },
   { id: "rubik", name: "Rubik" },
   { id: "manrope", name: "Manrope" },

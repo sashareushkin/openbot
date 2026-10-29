@@ -1,4 +1,9 @@
 @font-face {
+  font-family: "Studio Ysabeau Office";
+  src: url("./fonts/compare/ysabeau-office.ttf");
+  font-weight: 100 900;
+}
+@font-face {
   font-family: "Studio Nunito";
   src: url("./fonts/compare/nunito.ttf");
   font-weight: 200 1000;
@@ -17,6 +22,11 @@
   font-family: "Studio Comfortaa";
   src: url("./fonts/compare/comfortaa.ttf");
   font-weight: 300 700;
+}
+:root[data-font-preview="ysabeau-office"] {
+  --studio-font: "Studio Ysabeau Office";
+  --studio-reading-size: 16px;
+  --studio-reading-weight: 450;
 }
 :root[data-font-preview="nunito"] {
   --studio-font: "Studio Nunito";
